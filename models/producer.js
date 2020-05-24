@@ -5,7 +5,7 @@ let Schema = mongoose.Schema;
 let ProducerSchema = new Schema(
   {
     company: { type: String, required: true },
-    established: { type: Number, required: false, min: 1900, max: 2099 },
+    established: { type: Number, required: false, min: 1850, max: 2099 },
   }
 )
 

@@ -5,6 +5,7 @@ let Schema = mongoose.Schema;
 let PlatformSchema = new Schema(
   {
     name: { type: String, required: true },
+    detail: { type: String, required: true },
   }
 );
 
