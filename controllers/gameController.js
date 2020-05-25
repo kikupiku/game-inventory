@@ -1,7 +1,40 @@
 let Game = require('../models/game');
+let Genre = require('../models/genre');
+let Platform = require('../models/platform');
+let Producer = require('../models/producer');
+let Review = require('../models/review');
+
+let async = require('async');
 
 exports.index = function (req, res) {
-  res.send('NOT IMPLEMENTED: Site Home Page');
+
+  async.parallel({
+    game_count: function (callback) {
+      Game.countDocuments({}, callback);
+    },
+
+    producer_count: function (callback) {
+      Producer.countDocuments({}, callback);
+    },
+
+    platform_count: function (callback) {
+      Platform.countDocuments({}, callback);
+    },
+
+    genre_count: function (callback) {
+      Genre.countDocuments({}, callback);
+    },
+
+    review_count: function (callback) {
+      Review.countDocuments({}, callback);
+    },
+
+    wishlist_count: function (callback) {
+      Game.countDocuments({ isOnWishlist: 'Wanted' }, callback);
+    },
+  }, function (err, results) {
+    res.render('index', { title: 'Game Inventory', error: err, data: results });
+  });
 };
 
 exports.game_list = function (req, res) {

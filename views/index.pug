@@ -2,4 +2,18 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
+  br
+  p.welcome Welcome to my #{title}!
+  
+  if error
+    p Error getting the content, sorry!
+  else
+    p.welcome Here's what we have so far:
+    br
+    ul
+      li.index #[strong Games:] !{data.game_count}
+      li.index #[strong Producers:] !{data.producer_count}
+      li.index #[strong Platforms:] !{data.platform_count}
+      li.index #[strong Genres:] !{data.genre_count}
+      li.index #[strong Reviews:] !{data.review_count}
+      li.index #[strong Wishlisted:] !{data.wishlist_count}

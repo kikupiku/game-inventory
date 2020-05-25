@@ -1,7 +1,43 @@
 doctype html
-html
+html(lang='en')
   head
     title= title
+    meta(charset='utf-8', content='width=device-width, initial-scale=1')
     link(rel='stylesheet', href='/stylesheets/style.css')
+    link(href="https://fonts.googleapis.com/css2?family=Chelsea+Market&display=swap" rel="stylesheet")
   body
+    header 
+      div.menu
+        div.logo
+          p GAME
+          p INVENTORY
+        ul 
+          li
+            a(href='/games') Games
+          li 
+            a(href='/producers') Producers
+          li 
+            a(href='/platforms') Platforms
+          li 
+            a(href='/genres') Genres
+          li 
+            a(href='/reviews') Reviews
+          li 
+            a(href='/wishlist') Wishlist
+          
+    block sidebar
+      div.sidebar
+        p ADD NEW:
+        ul
+          li
+            a(href='/game/create') GAME
+          li
+            a(href='/producer/create') PRODUCER
+          li
+            a(href='/platform/create') PLATFORM
+          li
+            a(href='/review/create') REVIEW
+          li
+            a(href='/genre/create') GENRE
+          
     block content

@@ -156,6 +156,9 @@ function createProducersGenresAndPlatforms(cb) {
           producerCreate('Nintendo', 1889, callback);
         },
         function(callback) {
+          producerCreate('SquareSoft', 1986, callback);
+        },
+        function(callback) {
           genreCreate('Platformer', callback);
         },
         function(callback) {
@@ -167,8 +170,11 @@ function createProducersGenresAndPlatforms(cb) {
         function(callback) {
           genreCreate('RPG', callback);
         },
+        function(callback) {
+          genreCreate('JRPG', callback);
+        },
         function (callback) {
-          platformCreate('Computer', 'PC', callback);
+          platformCreate('Computer', 'Microsoft Windows', callback);
         },
         function (callback) {
           platformCreate('Console', 'Nintendo Switch', callback);
@@ -192,6 +198,9 @@ function createGames(cb) {
     },
     function (callback) {
       gameCreate('The Legend of Zelda: Breath of the Wild', producers[5], 'Breath of the Wild takes place at the end of the Zelda timeline in the kingdom of Hyrule. 10,000 years before the beginning of the game, the evil Calamity Ganon threatens Hyrule, but he is defeated by a princess with the blood of the goddess and with the help of her appointed knight.', [platforms[1],], 2017, [genres[1],], false, 'Already played', callback);
+    },
+    function (callback) {
+      gameCreate('Final Fantasy VIII', producers[6], 'Somewhere in the odd, anachronistic past-future of… unnamed planet, Headmaster Cid, who looks uncannily like Robin Williams, trains groups of teenagers at Hogwarts school of Mercenaries, AKA Balamb Garden. They have dances and school events and band practice and go on military deployments.', [platforms[0], platforms[1], platforms[2],], 2017, [genres[4],], false, 'Wanted', callback);
     },
   ],
     // optional callback
