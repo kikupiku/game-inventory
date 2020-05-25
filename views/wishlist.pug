@@ -3,7 +3,7 @@ extends layout
 block content
   h1= title
   
-  ul
+  ul.list-container
     for game in wishlisted
-      li 
+      li.simple-list
         a(href='/game/' + game._id)= game.title

@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  h1= title
+  
+  ul.list-container
+    for producer in producer_list
+      li.simple-list
+        a(href='/producer/' + producer._id)= producer.company
+        span est. #{producer.established}

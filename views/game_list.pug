@@ -3,7 +3,7 @@ extends layout
 block content
   h1= title
   br
-  ul.game-list
+  ul.list-container
     for game in game_list
       li 
         a(href='/game/' + game._id)= game.title

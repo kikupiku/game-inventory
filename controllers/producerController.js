@@ -1,7 +1,15 @@
 let Producer = require('../models/producer');
 
-exports.producer_list = function (req, res) {
-  res.send('NOT IMPLEMENTED: Producer list');
+exports.producer_list = function (req, res, next) {
+  Producer.find({}, 'company established')
+  .sort([['company', 'ascending']])
+  .exec(function (err, listProducers) {
+    if (err) {
+      return next(err);
+    }
+
+    res.render('producer_list', { title: 'List of Game Producers', producer_list: listProducers });
+  });
 };
 
 exports.producer_detail = function (req, res) {

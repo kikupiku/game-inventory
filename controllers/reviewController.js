@@ -1,7 +1,16 @@
 let Review = require('../models/review');
 
-exports.review_list = function (req, res) {
-  res.send('NOT IMPLEMENTED: Review list');
+exports.review_list = function (req, res, next) {
+  Review.find({}, 'game sourcePage rating')
+  .populate('game')
+  .sort([['game', 'ascending']])
+  .exec(function (err, listReviews) {
+    if (err) {
+      return next(err);
+    }
+
+    res.render('review_list', { title: 'List of Reviews', review_list: listReviews });
+  });
 };
 
 exports.review_detail = function (req, res) {

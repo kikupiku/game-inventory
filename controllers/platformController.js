@@ -1,7 +1,15 @@
 let Platform = require('../models/platform');
 
-exports.platform_list = function (req, res) {
-  res.send('NOT IMPLEMENTED: Platform list');
+exports.platform_list = function (req, res, next) {
+  Platform.find({}, 'name detail')
+  .sort([['name', 'ascending']])
+  .exec(function (err, listPlatforms) {
+    if (err) {
+      return next(err);
+    }
+
+    res.render('platform_list', { title: 'List of Gaming Platforms', platform_list: listPlatforms });
+  });
 };
 
 exports.platform_detail = function (req, res) {

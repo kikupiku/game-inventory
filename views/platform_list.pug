@@ -1,0 +1,21 @@
+extends layout
+
+block content
+  h1= title
+  
+  ul.list-container
+    - let platforms = []
+    for platform in platform_list
+      - platforms.push(platform.name);
+    for platform, index in platform_list
+      if platforms[index] == platform.name
+        if platforms[index] == platforms[index-1]
+          li
+            a.platform-detail.simple-list(href='/platform/' + platform._id)= platform.detail
+          
+        else
+          
+          li
+            a.platform-name(href='/platform/' + platform._id)= platform.name
+          li
+            a.platform-detail.simple-list(href='/platform/' + platform._id)= platform.detail

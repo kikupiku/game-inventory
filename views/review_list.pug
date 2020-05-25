@@ -1,0 +1,21 @@
+extends layout
+
+block content
+  h1= title
+  
+  ul.list-container
+    - let reviews = []
+    for review in review_list
+      - reviews.push(review.game.title);
+    for review, index in review_list
+      if reviews[index] == review.game.title
+        if reviews[index] == reviews[index-1]
+          li
+            a.platform-detail.simple-list(href=review.url) from #{review.sourcePage}, rating: #{review.rating}
+          
+        else
+          
+          li
+            a.platform-name(href=review.game.url) for #{review.game.title}
+          li
+            a.platform-detail.simple-list(href=review.url) from #{review.sourcePage}, rating: #{review.rating}

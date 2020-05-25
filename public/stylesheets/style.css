@@ -85,11 +85,19 @@ a:hover {
   color: white;
 }
 
+span {
+  color: rgb(155,158,161);
+}
+
+/* =======================
+LAYOUT
+======================= */
+
 .menu {
   display: flex;
   padding: 10px;
   height: 55px;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 }
 
 .logo {
@@ -128,18 +136,10 @@ ul {
 .sidebar {
   float: left;
   width: 160px;
-  height: calc(100vh - 55px);
+  height: calc(100vh - 120px);
   font-family: 'Chelsea Market', cursive;
   font-weight: bold;
-  padding-left: 10px;
-}
-
-.welcome {
-  margin-bottom: 5px;
-}
-
-.index {
-  margin-bottom: 4px;
+  padding-left: 30px;
 }
 
 .link-home {
@@ -149,12 +149,45 @@ ul {
   cursor: pointer;
 }
 
-.game-list {
-  width: 550px;
+/* =========================
+INDEX
+========================== */
+
+.welcome {
+  margin-bottom: 5px;
+}
+
+.index {
+  margin-bottom: 4px;
+}
+
+/* ========================
+LIST PAGES
+========================= */
+
+.list-container {
+  width: 65vw;
   position: relative;
+  margin-left: 190px;
+  min-width: 420px;
 }
 
 .year,
 .producer {
   text-align: right;
+}
+
+.simple-list {
+  line-height: 1.5;
+}
+
+.platform-name {
+  font-weight: bold;
+  color: white;
+  line-height: 2.5;
+}
+
+.platform-detail {
+  color: rgb(142,159,159);
+  margin-left: 15px;
 }

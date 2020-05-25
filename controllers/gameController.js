@@ -40,6 +40,7 @@ exports.index = function (req, res) {
 exports.game_list = function (req, res, next) {
   Game.find({}, 'title producer premiere')
   .populate('producer')
+  .sort([['title', 'ascending']])
   .exec(function (err, listGames) {
     if (err) {
       return next(err);
