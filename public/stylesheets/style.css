@@ -148,3 +148,13 @@ ul {
 .link-home:hover {
   cursor: pointer;
 }
+
+.game-list {
+  width: 550px;
+  position: relative;
+}
+
+.year,
+.producer {
+  text-align: right;
+}

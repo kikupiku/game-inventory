@@ -37,8 +37,16 @@ exports.index = function (req, res) {
   });
 };
 
-exports.game_list = function (req, res) {
-  res.send('NOT IMPLEMENTED: Game list');
+exports.game_list = function (req, res, next) {
+  Game.find({}, 'title producer premiere')
+  .populate('producer')
+  .exec(function (err, listGames) {
+    if (err) {
+      return next(err);
+    }
+
+    res.render('game_list', { title: 'List of Games', game_list: listGames });
+  });
 };
 
 exports.game_detail = function (req, res) {
