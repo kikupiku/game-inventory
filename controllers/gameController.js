@@ -45,8 +45,17 @@ exports.game_detail = function (req, res) {
   res.send('NOT IMPLEMENTED: Game detail: ' + req.params.id);
 };
 
-exports.game_wishlist = function (req, res) {
-  res.send('place for all the wishlisted games');
+exports.game_wishlist = function (req, res, next) {
+  Game.find({ isOnWishlist: 'Wanted' })
+  .populate('genre')
+  .sort([['name', 'ascending']])
+  .exec(function (err, wishlisted) {
+    if (err) {
+      return next(err);
+    }
+
+    res.render('wishlist', { title: 'Wishlist', wishlisted: wishlisted });
+  });
 };
 
 exports.game_create_get = function (req, res) {

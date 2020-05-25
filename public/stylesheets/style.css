@@ -141,3 +141,10 @@ ul {
 .index {
   margin-bottom: 4px;
 }
+
+.link-home {
+  padding: 0;
+}
+.link-home:hover {
+  cursor: pointer;
+}
