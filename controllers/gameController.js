@@ -51,7 +51,7 @@ exports.game_list = function (req, res, next) {
 };
 
 exports.game_detail = function (req, res) {
-  res.send('NOT IMPLEMENTED: Game detail: ' + req.params.id);
+  res.render('game_detail', {});
 };
 
 exports.game_wishlist = function (req, res, next) {
