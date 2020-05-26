@@ -1,4 +1,7 @@
 let Producer = require('../models/producer');
+let Game = require('../models/game');
+
+let async = require('async');
 
 exports.producer_list = function (req, res, next) {
   Producer.find({}, 'company established')
@@ -12,8 +15,24 @@ exports.producer_list = function (req, res, next) {
   });
 };
 
-exports.producer_detail = function (req, res) {
-  res.send('NOT IMPLEMENTED: Producer detail: ' + req.params.id);
+exports.producer_detail = function (req, res, next) {
+  async.parallel({
+    producer: function (callback) {
+      Producer.findById(req.params.id)
+      .exec(callback);
+    },
+
+    games: function (callback) {
+      Game.find({ 'producer': req.params.id })
+      .exec(callback);
+    },
+  }, function (err, results) {
+    if (err) {
+      return next(err);
+    }
+
+    res.render('producer_detail', { title: results.producer.company, producer: results.producer, games: results.games });
+  });
 };
 
 exports.producer_create_get = function (req, res) {

@@ -1,4 +1,7 @@
 let Genre = require('../models/genre');
+let Game = require('../models/game');
+
+let async = require('async');
 
 exports.genre_list = function (req, res, next) {
   Genre.find({}, 'label')
@@ -12,8 +15,15 @@ exports.genre_list = function (req, res, next) {
   });
 };
 
-exports.genre_detail = function (req, res) {
-  res.send('NOT IMPLEMENTED: Genre detail: ' + req.params.id);
+exports.genre_detail = function (req, res, next) {
+  Genre.findById(req.params.id)
+  .exec(function (err, genre) {
+    if (err) {
+      return next(err);
+    }
+
+    res.render('genre_detail', { title: 'Genre: ', genre: genre });
+  });
 };
 
 exports.genre_create_get = function (req, res) {

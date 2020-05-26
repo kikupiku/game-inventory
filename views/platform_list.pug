@@ -1,6 +1,7 @@
 extends layout
 
 block content
+  
   h1= title
   
   ul.list-container
@@ -15,7 +16,7 @@ block content
           
         else
           
-          li
-            a.platform-name(href='/platform/' + platform._id)= platform.name
+          li 
+            .platform-name(href='/platform/' + platform._id)= platform.name
           li
             a.platform-detail.simple-list(href='/platform/' + platform._id)= platform.detail

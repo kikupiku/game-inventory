@@ -13,8 +13,16 @@ exports.review_list = function (req, res, next) {
   });
 };
 
-exports.review_detail = function (req, res) {
-  res.send('NOT IMPLEMENTED: Review detail: ' + req.params.id);
+exports.review_detail = function (req, res, next) {
+  Review.findById(req.params.id)
+  .populate('game')
+  .exec(function (err, review) {
+    if (err) {
+      return next(err);
+    }
+
+    res.render('review_detail', { title: 'Review of ', review: review });
+  });
 };
 
 exports.review_create_get = function (req, res) {

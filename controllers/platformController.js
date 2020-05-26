@@ -12,8 +12,15 @@ exports.platform_list = function (req, res, next) {
   });
 };
 
-exports.platform_detail = function (req, res) {
-  res.send('NOT IMPLEMENTED: Platform detail: ' + req.params.id);
+exports.platform_detail = function (req, res, next) {
+  Platform.findById(req.params.id)
+  .exec(function (err, platform) {
+    if (err) {
+      return next(err);
+    }
+
+    res.render('platform_detail', { title: 'platform', platform: platform });
+  });
 };
 
 exports.platform_create_get = function (req, res) {

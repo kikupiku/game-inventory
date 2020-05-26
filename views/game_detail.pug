@@ -2,3 +2,38 @@ extends layout
 
 block content
   
+  h3
+    a(href='../games') &#8636; Back to List of Games
+  
+  h1=title
+  
+  p released in #{game.premiere} by #{game.producer.company}
+  
+  if (game.isOnWishlist === 'Wanted')
+    br
+    div.wishlisted
+      p &#9825; Wishlisted
+
+  h2 Summary:
+  div.summary
+    p= game.summary
+  
+  h2 Playable on:
+    each val, index in game.platform
+      a(href=val.url) #{val.detail}
+        if index < game.platform.length - 1
+          |,
+        
+  h2 Genre:
+    each val, index in game.genre
+      a(href=val.url) #{val.label}
+        if index < game.genre.length - 1
+          |,
+   
+  div.btn-wrapper
+    div(class="btn btn-update")
+      a(href=game.url + '/update')
+        span UPDATE
+    div(class="btn btn-delete")
+      a(href=game.url + '/delete')
+        span DELETE

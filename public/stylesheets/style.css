@@ -56,7 +56,9 @@ BODY
 ====================================== */
 
 body {
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-family: 'Caudex', serif;
+	line-height: 1.2;
+	font-weight: bold;
   color: white;
   background: url('https://www.nasa.gov/sites/default/files/styles/full_width_feature/public/thumbnails/image/iss061e110433.jpg') no-repeat center center fixed;
   background-size: cover;
@@ -72,6 +74,18 @@ h1 {
   font-size: 24px;
   font-family: 'Chelsea Market', cursive;
   padding-bottom: 15px;
+}
+
+h2 {
+	font-family: 'Chelsea Market', cursive;
+	margin-top: 30px;
+	margin-bottom: 30px;
+}
+
+h3 {
+	font-family: 'Chelsea Market', cursive;
+	font-size: 12px;
+	margin-bottom: 30px;
 }
 
 a {
@@ -187,7 +201,138 @@ LIST PAGES
   line-height: 2.5;
 }
 
-.platform-detail {
+.platform-detail,
+.game-detail {
   color: rgb(142,159,159);
   margin-left: 15px;
+}
+
+.game-detail {
+	line-height: 2;
+}
+
+/*===================================
+DETAIL PAGES
+=================================  */
+
+.wishlisted {
+	background-color: rgb(65,93,65);
+	color: rgb(192,204,191);
+	height: 30px;
+	line-height: 30px;
+	position: relative;
+	width: 120px;
+	margin-left: 190px;
+	border-radius: 5px;
+	text-align: center;
+	padding-right: 5px;
+}
+
+.summary {
+	padding-right: 50px;
+	line-height: 1.5;
+	text-align: justify;
+}
+
+.platform-title {
+	text-transform: capitalize;
+}
+
+.btn-wrapper {
+	display: flex;
+	width: 380px;
+	margin-left: 190px;
+  margin-top: 40px;
+}
+
+
+.btn {
+	line-height: 40px;
+	height: 40px;
+	text-align: center;
+	width: 160px;
+	cursor: pointer;
+  font-family: 'Chelsea Market', cursive;
+	margin-right: 30px;
+}
+
+.btn-delete,
+.btn-update {
+	transition: all 0.5s;
+	position: relative;
+}
+.btn-delete span,
+.btn-update span {
+	z-index: 2;
+	display: block;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+  transition: all 0.5s;
+}
+
+.btn-delete span:hover,
+.btn-update span:hover {
+  color: white;
+}
+.btn::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+	transition: all 0.5s;
+}
+
+.btn-delete::before {
+	background-color: rgba(255,0,0,.5);
+}
+
+.btn-update::before {
+	background-color: rgba(53,78,115,.8);
+}
+
+.btn::after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+	transition: all 0.5s;
+}
+
+.btn-delete::after {
+	background-color: rgba(255,255,255,0.1);
+}
+
+.btn-update::after {
+  border: 1px solid rgba(255,255,255,0);
+  transform: scale(1.2, 1.2);
+}
+
+.btn-delete:hover::before {
+  transform: translate(0, 50%) rotate(-30deg);
+  background-color: rgba(255,0,0,.7);
+  height: 20px;
+}
+
+.btn-update:hover::before {
+  opacity: 0;
+  transform: scale(0.5, 0.5);
+}
+
+.btn-delete:hover::after {
+  transform: translate(0, 50%) rotate(30deg);
+  background-color: rgba(255,0,0,.7);
+  height: 20px;
+}
+
+.btn-update:hover::after {
+  border: 2px solid rgba(53,78,115,.8);
+  opacity: 1;
+  transform: scale(1, 1);
 }

@@ -50,8 +50,34 @@ exports.game_list = function (req, res, next) {
   });
 };
 
-exports.game_detail = function (req, res) {
-  res.render('game_detail', {});
+exports.game_detail = function (req, res, next) {
+  async.parallel({
+    game: function (callback) {
+      Game.findById(req.params.id)
+      .populate('producer')
+      .populate('platform')
+      .populate('genre')
+      .exec(callback);
+    },
+
+    reviews: function (callback) {
+      Review.find({ 'game': req.params.id })
+      .exec(callback);
+    },
+
+  }, function (err, results) {
+      if (err) {
+        return next(err);
+      }
+
+      if (results.game === null) {
+        let err = new Error('Game not found');
+        err.status = 404;
+        return next(err);
+      }
+
+      res.render('game_detail', { title: results.game.title, game: results.game, reviews: results.reviews });
+    });
 };
 
 exports.game_wishlist = function (req, res, next) {

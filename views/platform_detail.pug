@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  
+  h3
+    a(href='../platforms') &#8636; Back to List of Platforms
+  
+  h1.platform-title #{platform.detail}
+  p #{platform.name}
+
+  div.btn-wrapper
+    div(class="btn btn-update")
+      a(href=platform.url + '/update')
+        span UPDATE
+    div(class="btn btn-delete")
+      a(href=platform.url + '/delete')
+        span DELETE

@@ -1,0 +1,25 @@
+extends layout
+
+block content
+  
+  h3
+    a(href='../reviews') &#8636; Back to List of Reviews
+  
+  h1 #{title} #{review.game.title}
+  p by #{review.sourcePage}
+  
+  h2 Rating: #{review.rating}
+  
+  h2 Snippet:
+  p.summary #{review.content}
+  
+  h2
+    a(href=review.link target="_blank") See the whole review &#8640;	
+
+  div.btn-wrapper
+    div(class="btn btn-update")
+      a(href=review.url + '/update')
+        span UPDATE
+    div(class="btn btn-delete")
+      a(href=review.url + '/delete')
+        span DELETE

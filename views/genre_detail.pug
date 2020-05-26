@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  
+  h1 #{title} #{genre.label}
+
+  div.btn-wrapper
+    div(class="btn btn-update")
+      a(href=genre.url + '/update')
+        span RENAME
+    div(class="btn btn-delete")
+      a(href=genre.url + '/delete')
+        span DELETE

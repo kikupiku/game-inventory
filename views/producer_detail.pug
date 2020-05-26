@@ -1,0 +1,24 @@
+extends layout
+
+block content
+  
+  h3
+    a(href='../producers') &#8636; Back to List of Producers
+  
+  h1=title
+  p Established in #{producer.established}
+  
+  if (games.length > 0)
+    h2 Games:
+      ul
+        for val, index in games
+          a(href='../game/' + val._id)
+            li.game-detail &nbsp;&nbsp;#{val.title}
+
+  div.btn-wrapper
+    div(class="btn btn-update")
+      a(href=producer.url + '/update')
+        span UPDATE
+    div(class="btn btn-delete")
+      a(href=producer.url + '/delete')
+        span DELETE
