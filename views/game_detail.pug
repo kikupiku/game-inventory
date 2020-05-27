@@ -2,8 +2,21 @@ extends layout
 
 block content
   
-  h3
-    a(href='../games') &#8636; Back to List of Games
+  if (referrer === 'games')
+    h3
+      a(href='../games') &#8636; Back to List of Games
+  else if (referrer === 'wishlist')
+    h3
+      a(href='../wishlist') &#8636; Back to Wishlist
+  else if (higherReferrer === 'genre/' + referrer)
+    h3
+      a(href='../genre/' + referrer) &#8636; Back to Genre
+  else if (higherReferrer === 'review/' + referrer)
+    h3
+      a(href='../review/' + referrer) &#8636; Back to Review
+  else if (higherReferrer === 'platform/' + referrer)
+    h3
+      a(href='../platform/' + referrer) &#8636; Back to Platform
   
   h1=title
   
@@ -13,6 +26,11 @@ block content
     br
     div.wishlisted
       p &#9825; Wishlisted
+      
+  if (game.isOnWishlist === 'Already played')
+    br
+    div.played
+      p &#10003; Already played
 
   h2 Summary:
   div.summary
@@ -29,6 +47,11 @@ block content
       a(href=val.url) #{val.label}
         if index < game.genre.length - 1
           |,
+        
+  if (reviews.length > 0)        
+    h2 Reviews by:
+    for review in reviews
+      a.review(href=review.url) #{review.sourcePage}, rating: #{review.rating}
    
   div.btn-wrapper
     div(class="btn btn-update")

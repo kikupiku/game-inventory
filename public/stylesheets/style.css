@@ -1,6 +1,6 @@
-/* =====================================
+/* ===================================
 RESET
-====================================== */
+=================================== */
 
 /* http://meyerweb.com/eric/tools/css/reset/
    v2.0 | 20110126
@@ -51,8 +51,8 @@ table {
 	border-spacing: 0;
 }
 
-/* =====================================
-BODY
+/* ===================================
+                 BODY
 ====================================== */
 
 body {
@@ -104,7 +104,7 @@ span {
 }
 
 /* =======================
-LAYOUT
+             LAYOUT
 ======================= */
 
 .menu {
@@ -150,7 +150,7 @@ ul {
 .sidebar {
   float: left;
   width: 160px;
-  height: calc(100vh - 120px);
+  height: calc(100vh - 130px);
   font-family: 'Chelsea Market', cursive;
   font-weight: bold;
   padding-left: 30px;
@@ -164,7 +164,7 @@ ul {
 }
 
 /* =========================
-INDEX
+             INDEX
 ========================== */
 
 .welcome {
@@ -176,7 +176,7 @@ INDEX
 }
 
 /* ========================
-LIST PAGES
+           LIST PAGES
 ========================= */
 
 .list-container {
@@ -212,20 +212,30 @@ LIST PAGES
 }
 
 /*===================================
-DETAIL PAGES
+            DETAIL PAGES
 =================================  */
 
-.wishlisted {
-	background-color: rgb(65,93,65);
-	color: rgb(192,204,191);
+.wishlisted,
+.played {
 	height: 30px;
 	line-height: 30px;
 	position: relative;
-	width: 120px;
 	margin-left: 190px;
 	border-radius: 5px;
 	text-align: center;
 	padding-right: 5px;
+}
+
+.wishlisted {
+	width: 120px;
+	background-color: rgb(139, 93, 133);
+	color: rgb(192,152,194);
+}
+
+.played {
+	width: 160px;
+	background-color: rgb(65,93,65);
+	color: rgb(192,204,191);
 }
 
 .summary {
@@ -236,6 +246,12 @@ DETAIL PAGES
 
 .platform-title {
 	text-transform: capitalize;
+}
+
+.review {
+	display: block;
+	font-family: 'Caudex', serif;
+	padding: 0;
 }
 
 .btn-wrapper {
@@ -257,12 +273,14 @@ DETAIL PAGES
 }
 
 .btn-delete,
-.btn-update {
+.btn-update,
+.btn-create {
 	transition: all 0.5s;
 	position: relative;
 }
 .btn-delete span,
-.btn-update span {
+.btn-update span,
+.btn-create span {
 	z-index: 2;
 	display: block;
 	position: absolute;
@@ -272,7 +290,8 @@ DETAIL PAGES
 }
 
 .btn-delete span:hover,
-.btn-update span:hover {
+.btn-update span:hover,
+.btn-create span:hover {
   color: white;
 }
 .btn::before {
@@ -294,6 +313,10 @@ DETAIL PAGES
 	background-color: rgba(53,78,115,.8);
 }
 
+.btn-create::before {
+	background-color: rgb(65,93,65);
+}
+
 .btn::after {
 	content: '';
 	position: absolute;
@@ -309,9 +332,16 @@ DETAIL PAGES
 	background-color: rgba(255,255,255,0.1);
 }
 
-.btn-update::after {
+.btn-update::after,
+.btn-create::after {
   border: 1px solid rgba(255,255,255,0);
   transform: scale(1.2, 1.2);
+}
+
+.btn-create:hover::after {
+  border: 2px solid rgb(65,93,65);
+  opacity: 1;
+  transform: scale(1, 1);
 }
 
 .btn-delete:hover::before {
@@ -320,7 +350,8 @@ DETAIL PAGES
   height: 20px;
 }
 
-.btn-update:hover::before {
+.btn-update:hover::before,
+.btn-create:hover::before {
   opacity: 0;
   transform: scale(0.5, 0.5);
 }
@@ -335,4 +366,54 @@ DETAIL PAGES
   border: 2px solid rgba(53,78,115,.8);
   opacity: 1;
   transform: scale(1, 1);
+}
+
+
+/* ===============================
+              CREATE
+=============================== */
+
+button {
+	border: none;
+	background-color: transparent;
+	font-weight: bold;
+	font-size: 16px;
+	z-index: 10;
+	color: white;
+	display: block;
+	margin-top: 30px;
+}
+
+button span {
+	position: relative;
+	left: 0;
+	top: 0;
+}
+
+label {
+	margin-right: 15px;
+	height: 50px;
+}
+
+input {
+	border-radius: 5px;
+	padding: 4px;
+	margin-bottom: 10px;
+}
+
+.errors {
+	border-radius: 5px;
+	border: 2px solid rgba(255,0,0,.7);
+	width: 400px;
+	margin-left: 190px;
+	padding: 10px;
+	/* background-color: rgba(255,255,255,.2); */
+	text-transform: full-width;
+}
+
+.error-msg {
+	color: rgba(255,0,0,.7);
+	list-style: none;
+	font-size: 18px;
+	margin-bottom: 10px;
 }

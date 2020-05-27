@@ -2,11 +2,15 @@ extends layout
 
 block content
   
-  h3
-    a(href='../platforms') &#8636; Back to List of Platforms
+  if (referrer === 'platforms')
+    h3
+      a(href='../platforms') &#8636; Back to List of Platforms
+  else
+    h3
+      a(href='../game/' + referrer) &#8636; Back to Game Page
   
   h1.platform-title #{platform.detail}
-  p #{platform.name}
+  p Type: #{platform.name}
 
   div.btn-wrapper
     div(class="btn btn-update")

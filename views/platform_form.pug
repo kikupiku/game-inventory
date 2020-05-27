@@ -1,0 +1,23 @@
+extends layout
+
+block content 
+  
+  h1 #{title}
+  
+  div
+    form(method='POST' action='')
+      label(for='name') Platform type:
+      input#name(type='text', placeholder='Console' name='name' value=(platform === undefined ? '' : platform.name))
+      br
+      label(for='detail') Name of platform:
+      input#detail(type='text', placeholder='Xbox 360' name='detail' value=(detail === undefined ? '' : platform.detail))
+        
+      button.btn.btn-create(type='submit')
+        span CREATE
+  
+  if errors
+    br
+    ul
+    div.errors
+      for error in errors
+        li.error-msg 	&#10060; #{error.msg}

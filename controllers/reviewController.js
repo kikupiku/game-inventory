@@ -1,5 +1,7 @@
 let Review = require('../models/review');
 
+let async = require('async');
+
 exports.review_list = function (req, res, next) {
   Review.find({}, 'game sourcePage rating')
   .populate('game')
@@ -14,14 +16,25 @@ exports.review_list = function (req, res, next) {
 };
 
 exports.review_detail = function (req, res, next) {
-  Review.findById(req.params.id)
-  .populate('game')
-  .exec(function (err, review) {
+  async.parallel({
+    review: function (callback) {
+      Review.findById(req.params.id)
+      .populate('game')
+      .exec(callback);
+    },
+
+    referrer: function (callback) {
+      let referrerURL = req.get('Referrer');
+      let referrer = referrerURL.substring(referrerURL.lastIndexOf('/') + 1);
+      callback(null, referrer);
+    },
+
+  }, function (err, results) {
     if (err) {
       return next(err);
     }
 
-    res.render('review_detail', { title: 'Review of ', review: review });
+    res.render('review_detail', { title: 'Review of ', review: results.review, referrer: results.referrer });
   });
 };
 

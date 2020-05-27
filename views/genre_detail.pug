@@ -2,7 +2,18 @@ extends layout
 
 block content
   
+  if (referrer === 'genres')
+    h3
+      a(href='../genres') &#8636; Back to List of Genres
+  else
+    h3
+      a(href='../game/' + referrer) &#8636; Back to Game Page
+  
   h1 #{title} #{genre.label}
+  
+  h2 Games:
+  for game in games
+    a(href=game.url) #{game.title}
 
   div.btn-wrapper
     div(class="btn btn-update")

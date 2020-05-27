@@ -1,0 +1,19 @@
+extends layout
+
+block content 
+  
+  h1 #{title}
+  
+  div
+    form(method='POST' action='')
+      label(for='label') Genre:
+      input#label(type='text', placeholder='First-person Shooter (FPS)' name='label' value=(genre === undefined ? '' : genre.label))
+      button.btn.btn-create(type='submit')
+        span CREATE
+  
+  if errors
+    br
+    ul
+    div.errors
+      for error in errors
+        li.error-msg!= error.msg
