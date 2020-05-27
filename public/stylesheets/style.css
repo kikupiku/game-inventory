@@ -417,3 +417,23 @@ input {
 	font-size: 18px;
 	margin-bottom: 10px;
 }
+
+select {
+	background-color: white;
+	border-radius: 5px;
+	padding: 4px;
+}
+
+textarea {
+	height: 80px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	border-radius: 5px;
+	width: 400px;
+	vertical-align: middle;
+	padding: 4px;
+}
+
+input[type='checkbox'] {
+	margin-left: 15px;
+}

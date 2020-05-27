@@ -55,9 +55,8 @@ exports.producer_create_post = [
       established: req.body.established,
     });
 
-    console.log('errorsssssssssssssss: ', errors);
     if (!errors.isEmpty()) {
-      res.render('producer_form', { title: 'Create new Producer', producer: producer, errors: errors.array() });
+      res.render('producer_form', { title: 'Create new Producer', producer: req.body, errors: errors.array() });
       return;
     } else {
       Producer.findOne({ 'company': req.body.company })

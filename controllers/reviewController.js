@@ -1,6 +1,8 @@
 let Review = require('../models/review');
+let Game = require('../models/game');
 
 let async = require('async');
+let validator = require('express-validator');
 
 exports.review_list = function (req, res, next) {
   Review.find({}, 'game sourcePage rating')
@@ -38,13 +40,59 @@ exports.review_detail = function (req, res, next) {
   });
 };
 
-exports.review_create_get = function (req, res) {
-  res.send('NOT IMPLEMENTED: Review create GET');
+exports.review_create_get = function (req, res, next) {
+  Game.find({}, 'title')
+  .exec(function (err, games) {
+    if (err) {
+      return next(err);
+    }
+
+    res.render('review_form', { title: 'Add new Review', games: games });
+  });
 };
 
-exports.review_create_post = function (req, res) {
-  res.send('NOT IMPLEMENTED: Review create POST');
-};
+exports.review_create_post = [
+  validator.body('game', 'Game must be specified').trim().isLength({ min: 1 }),
+  validator.body('sourcePage').trim().optional({ checkFalsy: true }),
+  validator.body('content').trim().optional({ checkFalsy: true }),
+  validator.body('rating', 'Please fill in the rating. If you cannot find it, write \'-\'').trim().isLength({ min: 1 }),
+  validator.body('link', 'Invalid website url').trim().isURL(),
+
+  validator.sanitizeBody('*').escape(),
+
+  (req, res, next) => {
+    const errors = validator.validationResult(req);
+
+    let review = new Review({
+      game: req.body.game,
+      sourcePage: req.body.sourcePage,
+      content: req.body.content,
+      rating: req.body.rating,
+      link: req.body.link,
+    });
+
+    if (!errors.isEmpty()) {
+      Game.find({}, 'title')
+      .exec(function (err, games) {
+        if (err) {
+          return next(err);
+        }
+
+        res.render('review_form', { title: 'Add new Review', games: games, review: review, selectedGame: review.game._id, errors: errors.array() });
+      });
+
+      return;
+    } else {
+      review.save(function (err) {
+        if (err) {
+          return next(err);
+        }
+
+        res.redirect(review.url);
+      });
+    }
+  },
+];
 
 exports.review_delete_get = function (req, res) {
   res.send('NOT IMPLEMENTED: Review delete GET');

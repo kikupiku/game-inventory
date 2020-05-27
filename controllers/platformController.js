@@ -55,7 +55,7 @@ exports.platform_create_post = [
     });
 
     if (!errors.isEmpty()) {
-      res.render('platform_form', { title: 'Create new Platform', platform: platform, errors: errors.array() });
+      res.render('platform_form', { title: 'Create new Platform', platform: req.body, errors: errors.array() });
       return;
     } else {
       Platform.findOne({ 'detail': req.body.detail })

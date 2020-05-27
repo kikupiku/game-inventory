@@ -5,6 +5,7 @@ let Producer = require('../models/producer');
 let Review = require('../models/review');
 
 let async = require('async');
+const validator = require('express-validator');
 
 exports.index = function (req, res) {
 
@@ -37,13 +38,122 @@ exports.index = function (req, res) {
   });
 };
 
-exports.game_create_get = function (req, res) {
-  res.render('game_form', { title: 'Create new Game' });
+exports.game_create_get = function (req, res, next) {
+  async.parallel({
+    producers: function (callback) {
+      Producer.find(callback);
+    },
+
+    platforms: function (callback) {
+      Platform.find(callback);
+    },
+
+    genres: function (callback) {
+      Genre.find(callback);
+    },
+  }, function (err, results) {
+    if (err) {
+      return next(err);
+    }
+
+    res.render('game_form', { title: 'Create new Game', producers: results.producers, platforms: results.platforms, genres: results.genres });
+  });
 };
 
-exports.game_create_post = function (req, res) {
-  res.send('NOT IMPLEMENTED: Game create POST');
-};
+exports.game_create_post = [
+  (req, res, next) => {
+    if (!(req.body.genre instanceof Array)) {
+      if (typeof req.body.genre === 'undefined') {
+        req.body.genre = [];
+      } else {
+        req.body.genre = new Array(req.body.genre);
+      }
+    }
+
+    next();
+  },
+
+  (req, res, next) => {
+    if (!(req.body.platform instanceof Array)) {
+      if (typeof req.body.platform === 'undefined') {
+        req.body.platform = [];
+      } else {
+        req.body.platform = new Array(req.body.platform);
+      }
+    }
+
+    next();
+  },
+
+  validator.body('title', 'There has to be a title').trim().isLength({ min: 1 }),
+  validator.body('producer', 'There has to be a producer').trim().isLength({ min: 1 }),
+  validator.body('summary').optional({ checkFalsy: true }).trim(),
+  validator.body('platform', 'There should be at least one platform where you can play this game').trim().isLength({ min: 1 }),
+  validator.body('premiere').trim().optional({ checkFalsy: true }),
+
+  validator.sanitizeBody('*').escape(),
+
+  (req, res, next) => {
+    const errors = validator.validationResult(req);
+
+    let game = new Game({
+      title: req.body.title,
+      producer: req.body.producer,
+      summary: req.body.summary,
+      platform: req.body.platform,
+      premiere: req.body.premiere,
+      genre: req.body.genre,
+      isOnWishlist: req.body.isOnWishlist,
+    });
+
+    if (!errors.isEmpty()) {
+      async.parallel({
+        producers: function (callback) {
+          Producer.find(callback);
+        },
+
+        platforms: function (callback) {
+          Platform.find()
+          .sort([['name', 'ascending']])
+          .exec(callback);
+        },
+
+        genres: function (callback) {
+          Genre.find(callback);
+        },
+      }, function (err, results) {
+        if (err) {
+          return next(err);
+        }
+
+        for (let i = 0; i < results.platforms.length; i++) {
+          if (game.platform.indexOf(results.platforms[i]._id) > -1) {
+            results.platforms[i].checked = 'true';
+          }
+        }
+
+        for (let i = 0; i < results.genres.length; i++) {
+          if (game.genre.indexOf(results.genres[i]._id) > -1) {
+            results.genres[i].checked = 'true';
+          }
+        }
+
+        console.log('dataaaaaaaa: ', game.summary);
+        res.render('game_form', { title: 'Create new Game', producers: results.producers, platforms: results.platforms, genres: results.genres, game: game, errors: errors.array() });
+      });
+
+      return;
+    } else {
+      game.save(function (err) {
+        if (err) {
+          return next(err);
+        }
+
+        res.redirect(game.url);
+      });
+    }
+  },
+];
 
 exports.game_delete_get = function (req, res) {
   res.send('NOT IMPLEMENTED: Game delete GET');

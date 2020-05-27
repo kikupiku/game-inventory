@@ -1,0 +1,37 @@
+extends layout
+
+block content 
+  
+  h1 #{title}
+  
+  div
+    form(method='POST' action='')
+      label(for='game') Producer:
+      select#game(type='select', placeholder='Select Producer', name='game' required='true')
+        for game in games
+          if review
+            option(value=game._id selected=(game._id.toString() === game.game ? 'selected' : false)) #{game.title}
+          else
+            option(value=game._id) #{game.title}  
+      br
+      label(for='sourcePage') Name of Source Page:
+      input#sourcePage(type='text', placeholder='GameSpot' name='sourcePage' value=(review === undefined ? '' : review.sourcePage))
+      br
+      label(for='content') Snippet of the Review:
+      textarea#content(placeholder='Fill in a short bit from the review' name='content' value=(content === undefined ? '' : review.content))
+      br
+      label(for='rating') Game Rating:
+      input#rating(type='text' placeholder='8/10' name='rating' value=(rating === undefined ? '' : review.rating))
+      br
+      label(for='link') Link:
+      input#link( type='text' placeholder='https://time.com/4683122/zelda-breath-of-the-wild-review/' name='link' value=(link === undefined ? '' : review.link))
+        
+      button.btn.btn-create(type='submit')
+        span CREATE
+  
+  if errors
+    br
+    ul
+    div.errors
+      for error in errors
+        li.error-msg 	&#10060; #{error.msg}

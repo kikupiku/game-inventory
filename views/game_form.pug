@@ -4,7 +4,52 @@ block content
   
   h1 #{title}
   
+  div
+    form(method='POST' action='')
+      label(for='title') Title:
+      input#title(type='text', placeholder='Need for Speed' name='title' value=(game === undefined ? '' : game.title))
+      br
+      label(for='producer') Producer:
+      select#producer(type='select', placeholder='Select Producer', name='producer' required='true')
+        for producer in producers
+          if game
+            option(value=producer._id selected=(producer._id.toString() === game.producer ? 'selected' : false)) #{producer.company}
+          else
+            option(value=producer._id) #{producer.company}  
+      br
+      label(for='summary') Summary:
+      textarea#summary(type='text', placeholder='A short summary of the game' name='summary' value=(summary === undefined ? '' : game.summary))
+      br
+      label Platform (mark at least one):
+      for platform in platforms
+        div
+          input(type='checkbox', name='platform', id=platform._id, value=platform._id, checked=platform.checked)
+          label(for=platform._id) #{platform.detail} (#{platform.name})
+      br
+      label(for='premiere') Year of Release:
+      input#premiere(type='number', min=1850, max=2099, placeholder=1994 name='premiere' value=(premiere === undefined ? '' : game.premiere))
+      br
+      label Genre:
+      for genre in genres
+        div
+          input(type='checkbox', name='genre', id=genre._id, value=genre._id, checked=genre.checked)
+          label(for=genre._id) #{genre.label}
+      br
+      label(for='isOnWishlist') Game Status:
+      - let statusValues = ['Wanted', 'Already played', 'Other']
+      for status in statusValues
+        input(type='radio', name='isOnWishlist', id=status, value=status)
+        label(for=status) #{status}
+      
+      
+      
+        
+      button.btn.btn-create(type='submit')
+        span CREATE
+  
   if errors
+    br
     ul
+    div.errors
       for error in errors
-        li!= error.msg
+        li.error-msg 	&#10060; #{error.msg}

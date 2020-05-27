@@ -5,7 +5,7 @@ block content
   if (referrer === 'reviews')
     h3
       a(href='../reviews') &#8636; Back to List of Reviews
-  else
+  else if (referrer !== 'create')
     h3
       a(href='../game/' + referrer) &#8636; Back to Game Page
   
