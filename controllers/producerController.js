@@ -104,7 +104,6 @@ exports.producer_delete_get = function (req, res, next) {
     }
 
     if (results.producer === null) {
-      console.log('it is not longer there, dummy');
       res.redirect('/producers');
     }
 
@@ -132,7 +131,6 @@ exports.producer_delete_post = function (req, res, next) {
       res.render('producer_delete', { title: 'Delete Producer', producer: results.producer, gamesByProducer: results.gamesByProducer });
       return;
     } else {
-      console.log('idtodelete: ', req.body.idToDelete);
       Producer.findByIdAndRemove(req.body.idToDelete, function deleteProducer(err) {
         if (err) {
           return next(err);

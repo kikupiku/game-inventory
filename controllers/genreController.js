@@ -83,12 +83,65 @@ exports.genre_create_post = [
   },
 ];
 
-exports.genre_delete_get = function (req, res) {
-  res.send('NOT IMPLEMENTED: Genre delete GET');
+exports.genre_delete_get = function (req, res, next) {
+  async.parallel({
+    genre: function (callback) {
+      Genre.findById(req.params.id)
+      .exec(callback);
+    },
+
+    gamesWithGenre: function (callback) {
+      Game.find({ 'genre': req.params.id })
+      .exec(callback);
+    },
+
+    referrer: function (callback) {
+      let referrerURL = req.get('Referrer');
+      let referrer = referrerURL.substring(referrerURL.lastIndexOf('/') + 1);
+      callback(null, referrer);
+    },
+  }, function (err, results) {
+    if (err) {
+      return next(err);
+    }
+
+    if (results.genre === null) {
+      res.redirect('/genres');
+    }
+
+    res.render('genre_delete', { title: 'Delete genre', genre: results.genre, gamesWithGenre: results.gamesWithGenre, referrer: results.referrer });
+  });
 };
 
-exports.genre_delete_post = function (req, res) {
-  res.send('NOT IMPLEMENTED: Genre delete POST');
+exports.genre_delete_post = function (req, res, next) {
+  async.parallel({
+    genre: function (callback) {
+      Genre.findById(req.body.idToDelete)
+      .exec(callback);
+    },
+
+    gamesWithGenre: function (callback) {
+      Game.find({ 'genre': req.body.idToDelete })
+      .exec(callback);
+    },
+  }, function (err, results) {
+    if (err) {
+      return next(err);
+    }
+
+    if (results.gamesWithGenre.length > 0) {
+      res.render('genre_delete', { title: 'Delete genre', genre: results.genre, gamesWithGenre: results.gamesWithGenre });
+      return;
+    } else {
+      Genre.findByIdAndRemove(req.body.idToDelete, function deleteGenre(err) {
+        if (err) {
+          return next(err);
+        }
+
+        res.redirect('/genres');
+      });
+    }
+  });
 };
 
 exports.genre_update_get = function (req, res) {
