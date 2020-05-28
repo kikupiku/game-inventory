@@ -1,4 +1,5 @@
 let Platform = require('../models/platform');
+let Game = require('../models/game');
 
 let async = require('async');
 const validator = require('express-validator');
@@ -81,12 +82,64 @@ exports.platform_create_post = [
   },
 ];
 
-exports.platform_delete_get = function (req, res) {
-  res.send('NOT IMPLEMENTED: Platform delete GET');
+exports.platform_delete_get = function (req, res, next) {
+  async.parallel({
+    platform: function (callback) {
+      Platform.findById(req.params.id)
+      .exec(callback);
+    },
+
+    gamesOnPlatform: function (callback) {
+      Game.find({ 'platform': req.params.id })
+      .exec(callback);
+    },
+
+    referrer: function (callback) {
+      let referrerURL = req.get('Referrer');
+      let referrer = referrerURL.substring(referrerURL.lastIndexOf('/') + 1);
+      callback(null, referrer);
+    },
+  }, function (err, results) {
+    if (err) {
+      return next(err);
+    }
+
+    if (results.platform  == null) {
+      res.redirect('/platforms');
+    }
+
+    res.render('platform_delete', { title: 'Delete Platform', platform: results.platform, gamesOnPlatform: results.gamesOnPlatform, referrer: results.referrer });
+  });
 };
 
-exports.platform_delete_post = function (req, res) {
-  res.send('NOT IMPLEMENTED: Platform delete POST');
+exports.platform_delete_post = function (req, res, next) {
+  async.parallel({
+    platform: function (callback) {
+      Platform.findById(req.body.idToDelete)
+      .exec(callback);
+    },
+
+    gamesOnPlatform: function (callback) {
+      Game.find({ 'platform': req.body.idToDelete })
+      .exec(callback);
+    },
+  }, function (err, results) {
+    if (err) {
+      return next(err);
+    }
+
+    if (results.gamesOnPlatform > 0) {
+      res.render('platform_delete', { title: 'Delete Platform', platform: results.platform, gamesOnPlatform: results.gamesOnPlatform });
+    } else {
+      Platform.findByIdAndRemove(req.body.idToDelete, function deletePlatform(err) {
+        if (err) {
+          return next(err);
+        }
+
+        res.redirect('/platforms');
+      });
+    }
+  });
 };
 
 exports.platform_update_get = function (req, res) {

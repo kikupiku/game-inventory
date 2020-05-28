@@ -1,0 +1,26 @@
+extends layout
+
+block content
+  
+  h3
+    a(href='../' + referrer) &#8636; I change my mind! Back to Platform Page
+    
+  h1 #{title}: #{platform.detail} (#{platform.name})
+  
+  if (gamesOnPlatform.length)
+    
+    h2.warning #{platform.detail} has games assigned to it. 
+    p.delete-instruction You have to remove this platform from the following games first before you can delete it:
+    
+    for game in gamesOnPlatform
+      p
+        a(href=game.url) - #{game.title}
+      
+  else
+    
+    p Do you really want to delete this Platform?
+    
+    form(method='POST' action='')
+      input#idToDelete(type='hidden' name='idToDelete' required='true' value=platform._id)
+      button.btn.btn-delete(type='submit') 
+        span Yes, DELETE

@@ -1,0 +1,25 @@
+extends layout
+
+block content
+  
+  h3
+    a(href='../' + referrer) &#8636; I change my mind! Back to Genre Page
+    
+  h1 #{title}: #{genre.label}
+  
+  if (gamesWithGenre.length)
+    
+    h2.warning #{genre.label} is used in existing games. 
+    p.delete-instruction You have to remove this genre from the following games first before you can delete it:
+    
+    for game in gamesWithGenre
+      a(href=game.url) - #{game.title}
+      
+  else
+    
+    p Do you really want to delete this genre?
+    
+    form(method='POST' action='')
+      input#idToDelete(type='hidden' name='idToDelete' required='true' value=genre._id)
+      button.btn.btn-delete(type='submit') 
+        span Yes, DELETE

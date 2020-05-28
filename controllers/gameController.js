@@ -137,8 +137,6 @@ exports.game_create_post = [
           }
         }
 
-        console.log('isOnWishlist: ', req.body.isOnWishlist);
-
         res.render('game_form', { title: 'Create new Game', producers: results.producers, platforms: results.platforms, genres: results.genres, checkedStatus: req.body.isOnWishlist, game: req.body, errors: errors.array() });
       });
 

@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  
+  h3
+    a(href='../' + referrer) &#8636; I change my mind! Back to Review Page
+    
+  h1 #{title} of #{review.game.title} by #{review.sourcePage}
+  
+    p Do you really want to delete this review?
+    
+    form(method='POST' action='')
+      input#idToDelete(type='hidden' name='idToDelete' required='true' value=review._id)
+      button.btn.btn-delete(type='submit') 
+        span Yes, DELETE
