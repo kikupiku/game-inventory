@@ -18,7 +18,11 @@ block content
             option(value=producer._id) #{producer.company}  
       br
       label(for='summary') Summary:
-      textarea#summary(type='text', placeholder='A short summary of the game' name='summary' value=(summary === undefined ? '' : game.summary))
+      textarea#summary(type='text' placeholder='A short summary of the game' name='summary')
+        if (game === undefined)
+          |
+        else
+          |#{game.summary}
       br
       label Platform (mark at least one):
       for platform in platforms
@@ -27,7 +31,7 @@ block content
           label(for=platform._id) #{platform.detail} (#{platform.name})
       br
       label(for='premiere') Year of Release:
-      input#premiere(type='number', min=1850, max=2099, placeholder=1994 name='premiere' value=(premiere === undefined ? '' : game.premiere))
+      input#premiere(type='number', min=1850, max=2099, placeholder=1994 name='premiere' value=(game === undefined ? '' : game.premiere))
       br
       label Genre:
       for genre in genres
@@ -38,7 +42,7 @@ block content
       label(for='isOnWishlist') Game Status:
       - let statusValues = ['Wanted', 'Already played', 'Other']
       for status in statusValues
-        input(type='radio', name='isOnWishlist', id=status, value=status)
+        input(type='radio', name='isOnWishlist', id=status, value=status checked=(status === checkedStatus ? true : false))
         label(for=status) #{status}
       
       

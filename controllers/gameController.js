@@ -70,10 +70,6 @@ exports.game_create_post = [
       }
     }
 
-    next();
-  },
-
-  (req, res, next) => {
     if (!(req.body.platform instanceof Array)) {
       if (typeof req.body.platform === 'undefined') {
         req.body.platform = [];
@@ -88,10 +84,12 @@ exports.game_create_post = [
   validator.body('title', 'There has to be a title').trim().isLength({ min: 1 }),
   validator.body('producer', 'There has to be a producer').trim().isLength({ min: 1 }),
   validator.body('summary').optional({ checkFalsy: true }).trim(),
-  validator.body('platform', 'There should be at least one platform where you can play this game').trim().isLength({ min: 1 }),
   validator.body('premiere').trim().optional({ checkFalsy: true }),
 
-  validator.sanitizeBody('*').escape(),
+  validator.sanitizeBody('title').escape(),
+  validator.sanitizeBody('producer').escape(),
+  validator.sanitizeBody('summary').escape(),
+  validator.sanitizeBody('premiere').escape(),
 
   (req, res, next) => {
     const errors = validator.validationResult(req);
@@ -121,13 +119,14 @@ exports.game_create_post = [
         genres: function (callback) {
           Genre.find(callback);
         },
+
       }, function (err, results) {
         if (err) {
           return next(err);
         }
 
         for (let i = 0; i < results.platforms.length; i++) {
-          if (game.platform.indexOf(results.platforms[i]._id) > -1) {
+          if (game.platform.indexOf(results.platforms[i]._id) >= 0) {
             results.platforms[i].checked = 'true';
           }
         }
@@ -138,8 +137,9 @@ exports.game_create_post = [
           }
         }
 
-        console.log('dataaaaaaaa: ', game.summary);
-        res.render('game_form', { title: 'Create new Game', producers: results.producers, platforms: results.platforms, genres: results.genres, game: game, errors: errors.array() });
+        console.log('isOnWishlist: ', req.body.isOnWishlist);
+
+        res.render('game_form', { title: 'Create new Game', producers: results.producers, platforms: results.platforms, genres: results.genres, checkedStatus: req.body.isOnWishlist, game: req.body, errors: errors.array() });
       });
 
       return;
