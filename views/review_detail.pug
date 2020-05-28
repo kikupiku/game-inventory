@@ -18,8 +18,9 @@ block content
   h2 Snippet:
   p.summary #{review.content}
   
-  h2
-    a(href=review.link target="_blank") See the whole review (in a new tab) &#8640;	
+  if (review.link)
+    h2
+      a(href=review.link target="_blank") See the whole review (in a new tab) &#8640;	
 
   div.btn-wrapper
     div(class="btn btn-update")

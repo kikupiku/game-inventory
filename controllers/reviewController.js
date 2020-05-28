@@ -53,12 +53,12 @@ exports.review_create_get = function (req, res, next) {
 
 exports.review_create_post = [
   validator.body('game', 'Game must be specified').trim().isLength({ min: 1 }),
-  validator.body('sourcePage').trim().optional({ checkFalsy: true }),
+  validator.body('sourcePage', 'Review cannot be anonymous').trim().isLength({ min: 1 }),
   validator.body('content').trim().optional({ checkFalsy: true }),
   validator.body('rating', 'Please fill in the rating. If you cannot find it, write \'-\'').trim().isLength({ min: 1 }),
-  validator.body('link', 'Invalid website url').trim().isURL(),
+  validator.body('link', 'Invalid website url').trim().isURL().optional({ checkFalsy: true }),
 
-  validator.sanitizeBody('*').escape(),
+  // validator.sanitizeBody('*').escape(),
 
   (req, res, next) => {
     const errors = validator.validationResult(req);
@@ -78,7 +78,10 @@ exports.review_create_post = [
           return next(err);
         }
 
-        res.render('review_form', { title: 'Add new Review', games: games, review: review, selectedGame: review.game._id, errors: errors.array() });
+        let unescapedLink = unescape(req.body.link);
+        let unescapedRating = unescape(req.body.rating);
+
+        res.render('review_form', { title: 'Add new Review', games: games, review: review, unescapedlink: unescapedLink, unescapedRating: unescapedRating, selectedGame: review.game._id, errors: errors.array() });
       });
 
       return;
