@@ -1,0 +1,25 @@
+extends layout
+
+block content
+  
+  h3
+    a(href='../' + referrer) &#8636; I change my mind! Back to Producer Page
+    
+  h1 #{title}: #{producer.company} 
+  
+  if (gamesByProducer.length)
+    
+    h2.warning #{producer.company} has games assigned. 
+    p.delete-instruction You have to delete the following games first before you can delete their producer:
+    
+    for game in gamesByProducer
+      a(href=game.url) - #{game.title}
+      
+  else
+    
+    p Do you really want to delete this Author?
+    
+    form(method='POST' action='')
+      input#idToDelete(type='hidden' name='idToDelete' required='true' value=producer._id)
+      button.btn.btn-delete(type='submit') 
+        span Yes, DELETE

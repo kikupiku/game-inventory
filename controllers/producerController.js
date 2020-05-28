@@ -81,12 +81,65 @@ exports.producer_create_post = [
   },
 ];
 
-exports.producer_delete_get = function (req, res) {
-  res.send('NOT IMPLEMENTED: Producer delete GET');
+exports.producer_delete_get = function (req, res, next) {
+  async.parallel({
+    producer: function (callback) {
+      Producer.findById(req.params.id)
+      .exec(callback);
+    },
+
+    gamesByProducer: function (callback) {
+      Game.find({ 'producer': req.params.id })
+      .exec(callback);
+    },
+
+    referrer: function (callback) {
+      let referrerURL = req.get('Referrer');
+      let referrer = referrerURL.substring(referrerURL.lastIndexOf('/') + 1);
+      callback(null, referrer);
+    },
+  }, function (err, results) {
+    if (err) {
+      return next(err);
+    }
+
+    if (results.producer === null) {
+      res.redirect('/producers');
+    }
+
+    res.render('producer_delete', { title: 'Delete Producer', producer: results.producer, gamesByProducer: results.gamesByProducer, referrer: results.referrer });
+  });
 };
 
-exports.producer_delete_post = function (req, res) {
-  res.send('NOT IMPLEMENTED: Producer delete POST');
+exports.producer_delete_post = function (req, res, next) {
+  async.parallel({
+    producer: function (callback) {
+      Producer.findById(req.params.idToDelete)
+      .exec(callback);
+    },
+
+    gamesByProducer: function (callback) {
+      Game.find({ 'producer': req.params.idToDelete })
+      .exec(callback);
+    },
+  }, function (err, results) {
+    if (err) {
+      return next(err);
+    }
+
+    if (results.gamesByProducer.length > 0) {
+      res.render('producer_delete', { title: 'Delete Producer', producer: results.producer, gamesByProducer: results.gamesByProducer });
+      return;
+    } else {
+      Producer.findByIdAndRemove(req.body.idToDelete, function deleteProducer(err) {
+        if (err) {
+          return next(err);
+        }
+
+        res.redirect('/producers');
+      });
+    }
+  });
 };
 
 exports.producer_update_get = function (req, res) {
