@@ -155,12 +155,65 @@ exports.game_create_post = [
   },
 ];
 
-exports.game_delete_get = function (req, res) {
-  res.send('NOT IMPLEMENTED: Game delete GET');
+exports.game_delete_get = function (req, res, next) {
+  async.parallel({
+    game: function (callback) {
+      Game.findById(req.params.id)
+      .exec(callback);
+    },
+
+    reviewsOfGame: function (callback) {
+      Review.find({ 'game': req.params.id })
+      .exec(callback);
+    },
+
+    referrer: function (callback) {
+      let referrerURL = req.get('Referrer');
+      let referrer = referrerURL.substring(referrerURL.lastIndexOf('/') + 1);
+      callback(null, referrer);
+    },
+  }, function (err, results) {
+    if (err) {
+      return next(err);
+    }
+
+    if (results.game === null) {
+      res.redirect('/games');
+    }
+
+    res.render('game_delete', { title: 'Delete Game', game: results.game, reviewsOfGame: results.reviewsOfGame, referrer: results.referrer });
+  });
 };
 
-exports.game_delete_post = function (req, res) {
-  res.send('NOT IMPLEMENTED: Game delete POST');
+exports.game_delete_post = function (req, res, next) {
+  async.parallel({
+    game: function (callback) {
+      Game.findById(req.params.idToDelete)
+      .exec(callback);
+    },
+
+    reviewsOfGame: function (callback) {
+      Review.find({ 'game': req.params.idToDelete })
+      .exec(callback);
+    },
+  }, function (err, results) {
+    if (err) {
+      return next(err);
+    }
+
+    if (results.reviewsOfGame.length > 0) {
+      res.render('game_delete', { title: 'Delete Game', game: results.game, reviewsOfGame: results.reviewsOfGame, referrer: results.referrer });
+      return;
+    } else {
+      Game.findByIdAndRemove(req.body.idToDelete, function deleteGame(err) {
+        if (err) {
+          return next(err);
+        }
+
+        res.redirect('/games');
+      });
+    }
+  });
 };
 
 exports.game_update_get = function (req, res) {
