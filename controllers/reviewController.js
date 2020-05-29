@@ -97,12 +97,48 @@ exports.review_create_post = [
   },
 ];
 
-exports.review_delete_get = function (req, res) {
-  res.send('NOT IMPLEMENTED: Review delete GET');
+exports.review_delete_get = function (req, res, next) {
+  async.parallel({
+    review: function (callback) {
+      Review.findById(req.params.id)
+      .populate('game')
+      .exec(callback);
+    },
+
+    referrer: function (callback) {
+      let referrerURL = req.get('Referrer');
+      let referrer = referrerURL.substring(referrerURL.lastIndexOf('/') + 1);
+      callback(null, referrer);
+    },
+  }, function (err, results) {
+    if (err) {
+      return next(err);
+    }
+
+    if (results.review == null) {
+      res.redirect('/reviews');
+    }
+
+    res.render('review_delete', { title: 'Delete review', review: results.review, referrer: results.referrer });
+  });
 };
 
-exports.review_delete_post = function (req, res) {
-  res.send('NOT IMPLEMENTED: Review delete POST');
+exports.review_delete_post = function (req, res, next) {
+  Review.findById(req.body.idToDelete)
+  .populate('game')
+  .exec(function (err, review) {
+    if (err) {
+      return next(err);
+    }
+
+    Review.findByIdAndRemove(req.body.idToDelete, function deleteReview(err) {
+      if (err) {
+        return next(err);
+      }
+
+      res.redirect('/reviews');
+    });
+  });
 };
 
 exports.review_update_get = function (req, res) {
