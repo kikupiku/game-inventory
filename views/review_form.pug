@@ -6,7 +6,7 @@ block content
   
   div
     form(method='POST' action='')
-      label(for='game') Producer*:
+      label(for='game') * Game:
       select#game(type='select', placeholder='Select Producer', name='game' required='true')
         for game in games
           if review
@@ -14,7 +14,7 @@ block content
           else
             option(value=game._id) #{game.title}  
       br
-      label(for='sourcePage') Name of Source Page*:
+      label(for='sourcePage') * Name of Source Page:
       input#sourcePage(type='text', placeholder='GameSpot' name='sourcePage' value=(review === undefined ? '' : review.sourcePage))
       br
       label(for='content') Snippet of the Review:
@@ -22,16 +22,22 @@ block content
         if (review === undefined)
           |
         else
-          |#{review.content}
+          |#{unescapedSnippet}
       br
-      label(for='rating') Game Rating*:
+      label(for='rating') * Game Rating:
       input#rating(type='text' placeholder='8/10' name='rating' value=(review === undefined ? '' : unescapedRating))
       br
-      label(for='link') Link*:
-      input#link( type='text' placeholder='https://time.com/4683122/zelda-breath-of-the-wild-review/' name='link' value=(review === undefined ? '' : unescapedlink))
+      label(for='link') * Link:
+      input#link( type='text' placeholder='https://time.com/4683122/zelda-breath-of-the-wild-review/' name='link' value=(review === undefined ? '' : unescapedLink))
+      br
+      p.required * - required
         
-      button.btn.btn-create(type='submit')
-        span CREATE
+      if review
+        button.btn.btn-create(type='submit')
+          span UPDATE
+      else
+        button.btn.btn-create(type='submit')
+          span CREATE
   
   if errors
     br

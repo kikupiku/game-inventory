@@ -1,6 +1,10 @@
 extends layout
 
 block content
+  
+  if (referrer === 'delete')
+    h3.deleted-msg Review deleted!
+    
   h1= title
   
   ul.list-container
@@ -8,14 +12,15 @@ block content
     for review in review_list
       - reviews.push(review.game.title);
     for review, index in review_list
+      - let unescapedRating = (review.rating).replace(/&#x2F;/g, '/');
       if reviews[index] == review.game.title
         if reviews[index] == reviews[index-1]
           li
-            a.platform-detail.simple-list(href=review.url) from #{review.sourcePage}, rating: #{review.rating}
+            a.platform-detail.simple-list(href=review.url) from #{review.sourcePage}, rating: #{unescapedRating}
           
         else
           
           li
             a.platform-name(href=review.game.url) for #{review.game.title}
           li
-            a.platform-detail.simple-list(href=review.url) from #{review.sourcePage}, rating: #{review.rating}
+            a.platform-detail.simple-list(href=review.url) from #{review.sourcePage}, rating: #{unescapedRating}

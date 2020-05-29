@@ -5,15 +5,29 @@ let async = require('async');
 let validator = require('express-validator');
 
 exports.review_list = function (req, res, next) {
-  Review.find({}, 'game sourcePage rating')
-  .populate('game')
-  .sort([['game', 'ascending']])
-  .exec(function (err, listReviews) {
+  async.parallel({
+    listReviews: function (callback) {
+      Review.find({}, 'game sourcePage rating')
+      .populate('game')
+      .sort([['game', 'ascending']])
+      .exec(callback);
+    },
+
+    referrer: function (callback) {
+      let referrerURL = req.get('Referrer');
+      let referrer = referrerURL.substring(referrerURL.lastIndexOf('/') + 1);
+      callback(null, referrer);
+    },
+  }, function (err, results) {
     if (err) {
       return next(err);
     }
 
-    res.render('review_list', { title: 'List of Reviews', review_list: listReviews });
+    res.render('review_list', {
+      title: 'List of Reviews',
+      review_list: results.listReviews,
+      referrer: results.referrer, 
+    });
   });
 };
 
@@ -36,7 +50,20 @@ exports.review_detail = function (req, res, next) {
       return next(err);
     }
 
-    res.render('review_detail', { title: 'Review of ', review: results.review, referrer: results.referrer });
+    let unescapedLink = (results.review.link).replace(/&#x2F;/g, '/');
+    let unescapedRating = (results.review.rating).replace(/&#x2F;/g, '/');
+    let unescapedSnippet = (results.review.content).replace(/&#x27;/g, '\'');
+
+    console.log('unescapedLink: ', unescapedLink);
+    console.log('unescapedRating: ', unescapedRating);
+    res.render('review_detail', {
+      title: 'Review of ',
+      review: results.review,
+      referrer: results.referrer,
+      unescapedLink: unescapedLink,
+      unescapedRating: unescapedRating,
+      unescapedSnippet: unescapedSnippet,
+    });
   });
 };
 
@@ -58,7 +85,7 @@ exports.review_create_post = [
   validator.body('rating', 'Please fill in the rating. If you cannot find it, write \'-\'').trim().isLength({ min: 1 }),
   validator.body('link', 'Invalid website url').trim().isURL().optional({ checkFalsy: true }),
 
-  // validator.sanitizeBody('*').escape(),
+  validator.sanitizeBody('*').escape(),
 
   (req, res, next) => {
     const errors = validator.validationResult(req);
@@ -78,10 +105,20 @@ exports.review_create_post = [
           return next(err);
         }
 
-        let unescapedLink = unescape(req.body.link);
-        let unescapedRating = unescape(req.body.rating);
+        let unescapedLink = (req.body.link).replace(/&#x2F;/g, '/');
+        let unescapedRating = (req.body.rating).replace(/&#x2F;/g, '/');
+        let unescapedSnippet = (results.review.content).replace(/&#x27;/g, '\'');
 
-        res.render('review_form', { title: 'Add new Review', games: games, review: review, unescapedlink: unescapedLink, unescapedRating: unescapedRating, selectedGame: review.game._id, errors: errors.array() });
+        res.render('review_form', {
+          title: 'Add new Review',
+          games: games,
+          review: review,
+          unescapedLink: unescapedLink,
+          unescapedRating: unescapedRating,
+          unescapedSnippet: unescapedSnippet,
+          selectedGame: review.game._id,
+          errors: errors.array()
+        });
       });
 
       return;
@@ -141,10 +178,93 @@ exports.review_delete_post = function (req, res, next) {
   });
 };
 
-exports.review_update_get = function (req, res) {
-  res.send('NOT IMPLEMENTED: Review update GET');
+exports.review_update_get = function (req, res, next) {
+  async.parallel({
+    review: function (callback) {
+      Review.findById(req.params.id)
+      .populate('game')
+      .exec(callback);
+    },
+
+    games: function (callback) {
+      Game.find(callback);
+    },
+
+    referrer: function (callback) {
+      let referrerURL = req.get('Referrer');
+      let referrer = referrerURL.substring(referrerURL.lastIndexOf('/') + 1);
+      callback(null, referrer);
+    },
+  }, function (err, results) {
+    if (err) {
+      return next(err);
+    }
+
+    if (results.review === null) {
+      let err = new Error('Game not found');
+      err.status = 404;
+      return next(err);
+    }
+
+    let unescapedLink = (results.review.link).replace(/&#x2F;/g, '/');
+    let unescapedRating = (results.review.rating).replace(/&#x2F;/g, '/');
+    let unescapedSnippet = (results.review.content).replace(/&#x27;/g, '\'');
+
+    res.render('review_form', {
+      title: 'Update review',
+      review: results.review,
+      games: results.games,
+      referrer: results.referrer,
+      unescapedLink: unescapedLink,
+      unescapedRating: unescapedRating,
+      unescapedSnippet: unescapedSnippet,
+    });
+  });
 };
 
-exports.review_update_post = function (req, res) {
-  res.send('NOT IMPLEMENTED: Review update POST');
-};
+exports.review_update_post = [
+  validator.body('game', 'Game must be specified').trim().isLength({ min: 1 }),
+  validator.body('sourcePage', 'Review cannot be anonymous').trim().isLength({ min: 1 }),
+  validator.body('content').trim().optional({ checkFalsy: true }),
+  validator.body('rating', 'Please fill in the rating. If you cannot find it, write \'-\'').trim().isLength({ min: 1 }),
+  validator.body('link', 'Invalid website url').trim().isURL().optional({ checkFalsy: true }),
+
+  validator.sanitizeBody('*').escape(),
+
+  (req, res, next) => {
+    const errors = validator.validationResult(req);
+
+    let review = new Review({
+      game: req.body.game,
+      sourcePage: req.body.sourcePage,
+      content: req.body.content,
+      rating: req.body.rating,
+      link: req.body.link,
+      _id: req.params.id,
+    });
+
+    if (!errors.isEmpty()) {
+      let unescapedLink = (results.review.link).replace(/&#x2F;/g, '/');
+      let unescapedRating = (results.review.rating).replace(/&#x2F;/g, '/');
+      let unescapedSnippet = (results.review.content).replace(/&#x27;/g, '\'');
+
+      res.render('review_form', {
+        title: 'Update review',
+        review: review,
+        unescapedLink: unescapedLink,
+        unescapedRating: unescapedRating,
+        unescapedSnippet: unescapedSnippet,
+      });
+
+      return;
+    } else {
+      Review.findByIdAndUpdate(req.params.id, review, {}, function (err, updatedReview) {
+        if (err) {
+          return next(err);
+        }
+
+        res.redirect(updatedReview.url);
+      })
+    }
+  },
+];

@@ -12,15 +12,15 @@ block content
   h1 #{title}:
     a(href=review.game.url) #{review.game.title}
   p by #{review.sourcePage}
-  
-  h2 Rating: #{review.rating}
+
+  h2 Rating: #{unescapedRating}
   
   h2 Snippet:
-  p.summary #{review.content}
+  p.summary #{unescapedSnippet}
   
   if (review.link)
     h2
-      a(href=review.link target="_blank") See the whole review (in a new tab) &#8640;	
+      a(href=unescapedLink target="_blank") See the whole review (in a new tab) &#8640;	
 
   div.btn-wrapper
     div(class="btn btn-update")

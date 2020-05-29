@@ -13,9 +13,9 @@ block content
       select#producer(type='select', placeholder='Select Producer', name='producer' required='true')
         for producer in producers
           if game
-            option(value=producer._id selected=(producer._id.toString() === game.producer ? 'selected' : false)) #{producer.company}
+            option(value=producer._id selected=(producer._id.toString() == selectedProducerId) ? 'selected' : false) #{producer.company}
           else
-            option(value=producer._id) #{producer.company}  
+            option(value=producer._id) #{producer.company}
       br
       label(for='summary') Summary:
       textarea#summary(type='text' placeholder='A short summary of the game' name='summary')
@@ -42,14 +42,20 @@ block content
       label(for='isOnWishlist') Game Status:
       - let statusValues = ['Wanted', 'Already played', 'Other']
       for status in statusValues
-        input(type='radio', name='isOnWishlist', id=status, value=status checked=(status === checkedStatus ? true : false))
-        label(for=status) #{status}
+        if game
+          input(type='radio', name='isOnWishlist', id=status, value=status checked=(status === checkedStatus ? true : false))
+          label(for=status) #{status}
+        else
+          input(type='radio', name='isOnWishlist', id=status, value=status checked=(status === 'Other' ? true : false))
+          label(for=status) #{status}
       
       
-      
-        
-      button.btn.btn-create(type='submit')
-        span CREATE
+      if game
+        button.btn.btn-create(type='submit')
+          span UPDATE
+      else
+        button.btn.btn-create(type='submit')
+          span CREATE
   
   if errors
     br

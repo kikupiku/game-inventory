@@ -438,6 +438,10 @@ input[type='checkbox'] {
 	margin-left: 15px;
 }
 
+.required {
+	font-size: 14px;
+}
+
 /* ===============================
                DELETE
 ================================= */
@@ -451,4 +455,20 @@ input[type='checkbox'] {
 	padding-right: 50px;
 	text-align: justify;
 	margin-bottom: 20px;
+}
+
+.deleted-msg {
+	color: red;
+  -webkit-animation: 5s ease 0s normal forwards 1 fadein;
+  animation: 5s ease 0s normal forwards 1 fadein;
+}
+
+@keyframes fadein{
+  0% { opacity:1; }
+  100% { opacity:0; }
+}
+
+@-webkit-keyframes fadein{
+  0% { opacity:1; }
+  100% { opacity:0; }
 }

@@ -18,7 +18,7 @@ router.get('/game/create', gameController.game_create_get);
 router.post('/game/create', gameController.game_create_post);
 router.get('/game/:id/delete', gameController.game_delete_get);
 router.post('/game/:id/delete', gameController.game_delete_post);
-router.get('post/game/:id/update', gameController.game_update_get);
+router.get('/game/:id/update', gameController.game_update_get);
 router.post('/game/:id/update', gameController.game_update_post);
 router.get('/game/:id', gameController.game_detail);
 
