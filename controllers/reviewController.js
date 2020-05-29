@@ -26,7 +26,7 @@ exports.review_list = function (req, res, next) {
     res.render('review_list', {
       title: 'List of Reviews',
       review_list: results.listReviews,
-      referrer: results.referrer, 
+      referrer: results.referrer,
     });
   });
 };
@@ -264,7 +264,7 @@ exports.review_update_post = [
         }
 
         res.redirect(updatedReview.url);
-      })
+      });
     }
   },
 ];

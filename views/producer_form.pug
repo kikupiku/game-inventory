@@ -12,8 +12,12 @@ block content
       label(for='established') Established in (year):
       input#established(type='number', placeholder='1994' name='established' value=(producer === undefined ? '' : producer.established))
         
-      button.btn.btn-create(type='submit')
-        span CREATE
+      if producer
+        button.btn.btn-create(type='submit')
+          span UPDATE
+      else
+        button.btn.btn-create(type='submit')
+          span CREATE
   
   if errors
     br
