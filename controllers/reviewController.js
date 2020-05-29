@@ -54,8 +54,6 @@ exports.review_detail = function (req, res, next) {
     let unescapedRating = (results.review.rating).replace(/&#x2F;/g, '/');
     let unescapedSnippet = (results.review.content).replace(/&#x27;/g, '\'');
 
-    console.log('unescapedLink: ', unescapedLink);
-    console.log('unescapedRating: ', unescapedRating);
     res.render('review_detail', {
       title: 'Review of ',
       review: results.review,
