@@ -5,14 +5,28 @@ let async = require('async');
 const validator = require('express-validator');
 
 exports.platform_list = function (req, res, next) {
-  Platform.find({}, 'name detail')
-  .sort([['name', 'ascending']])
-  .exec(function (err, listPlatforms) {
+  async.parallel({
+    listPlatforms: function (callback) {
+      Platform.find({}, 'name detail')
+      .sort([['name', 'ascending']])
+      .exec(callback);
+    },
+
+    referrer: function (callback) {
+      let referrerURL = req.get('Referrer');
+      let referrer = referrerURL.substring(referrerURL.lastIndexOf('/') + 1);
+      callback(null, referrer);
+    },
+  }, function (err, results) {
     if (err) {
       return next(err);
     }
 
-    res.render('platform_list', { title: 'List of Gaming Platforms', platform_list: listPlatforms });
+    res.render('platform_list', {
+      title: 'List of Gaming Platforms',
+      platform_list: results.listPlatforms,
+      referrer: results.referrer,
+    });
   });
 };
 

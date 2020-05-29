@@ -2,6 +2,9 @@ extends layout
 
 block content
   
+  if (referrer === 'delete')
+    h3.deleted-msg Platform deleted!
+  
   h1= title
   
   ul.list-container

@@ -1,6 +1,10 @@
 extends layout
 
 block content 
+  
+  if (referrer === 'delete')
+    h3.deleted-msg Genre deleted!
+  
   h1= title
   
   ul

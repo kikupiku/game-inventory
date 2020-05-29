@@ -5,14 +5,28 @@ let async = require('async');
 const validator = require('express-validator');
 
 exports.genre_list = function (req, res, next) {
-  Genre.find({}, 'label')
-  .sort([['label', 'ascending']])
-  .exec(function (err, listGenres) {
+  async.parallel({
+    listGenres: function (callback) {
+      Genre.find({}, 'label')
+      .sort([['label', 'ascending']])
+      .exec(callback);
+    },
+
+    referrer: function (callback) {
+      let referrerURL = req.get('Referrer');
+      let referrer = referrerURL.substring(referrerURL.lastIndexOf('/') + 1);
+      callback(null, referrer);
+    },
+  }, function (err, results) {
     if (err) {
       return next(err);
     }
 
-    res.render('genre_list', { title: 'List of Genres', genre_list: listGenres });
+    res.render('genre_list', {
+      title: 'List of Genres',
+      genre_list: results.listGenres,
+      referrer: results.referrer,
+    });
   });
 };
 

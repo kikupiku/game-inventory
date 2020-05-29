@@ -5,14 +5,28 @@ let async = require('async');
 const validator = require('express-validator');
 
 exports.producer_list = function (req, res, next) {
-  Producer.find({}, 'company established')
-  .sort([['company', 'ascending']])
-  .exec(function (err, listProducers) {
+  async.parallel({
+    listProducers: function (callback) {
+      Producer.find({}, 'company established')
+      .sort([['company', 'ascending']])
+      .exec(callback);
+    },
+
+    referrer: function (callback) {
+      let referrerURL = req.get('Referrer');
+      let referrer = referrerURL.substring(referrerURL.lastIndexOf('/') + 1);
+      callback(null, referrer);
+    },
+  }, function (err, results) {
     if (err) {
       return next(err);
     }
 
-    res.render('producer_list', { title: 'List of Game Producers', producer_list: listProducers });
+    res.render('producer_list', {
+      title: 'List of Game Producers',
+      producer_list: results.listProducers,
+      referrer: results.referrer,
+    });
   });
 };
 
