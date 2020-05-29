@@ -7,7 +7,7 @@ block content
     
   h1 #{title}: #{game.title} 
   
-  if (reviewsOfGame.length)
+  if (reviewsOfGame.length > 0)
     
     h2.warning #{game.title} has some reviews. 
     p.delete-instruction You have to delete the following reviews first before you can delete this game:

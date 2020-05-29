@@ -7,11 +7,16 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
+let compression = require('compression');
+let helmet = require('helmet');
+
 const dotenv = require('dotenv');
 dotenv.config();
 const MONGODB_URI = process.env.MONGODB_SECRET; //var for heroku: MONGODB_SECRET
 
 var app = express();
+
+app.use(helmet());
 
 let mongoose = require('mongoose');
 let mongoDB = MONGODB_URI;
@@ -27,6 +32,9 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.use(compression());
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
