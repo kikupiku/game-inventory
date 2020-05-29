@@ -158,10 +158,65 @@ exports.genre_delete_post = function (req, res, next) {
   });
 };
 
-exports.genre_update_get = function (req, res) {
-  res.send('NOT IMPLEMENTED: Genre update GET');
+exports.genre_update_get = function (req, res, next) {
+  async.parallel({
+    genre: function (callback) {
+      Genre.findById(req.params.id)
+      .exec(callback);
+    },
+
+    referrer: function (callback) {
+      let referrerURL = req.get('Referrer');
+      let referrer = referrerURL.substring(referrerURL.lastIndexOf('/') + 1);
+      callback(null, referrer);
+    },
+  }, function (err, results) {
+    if (err) {
+      return next(err);
+    }
+
+    if (results.genre === null) {
+      let err = new Error('Genre not found');
+      err.status = 404;
+      return next(err);
+    }
+
+    res.render('genre_form', {
+      title: 'Update genre',
+      genre: results.genre,
+      referrer: results.referrer,
+    });
+  });
 };
 
-exports.genre_update_post = function (req, res) {
-  res.send('NOT IMPLEMENTED: Genre update POST');
-};
+exports.genre_update_post = [
+  validator.body('label', 'Genre name is required').trim().isLength({ min: 1 }),
+  validator.sanitizeBody('label').escape(),
+
+  (req, res, next) => {
+    const errors = validator.validationResult(req);
+
+    let genre = new Genre({
+      label: req.body.label,
+      _id: req.params.id,
+    });
+
+    if (!errors.isEmpty()) {
+      res.render('genre_form', {
+        title: 'Update genre',
+        genre: genre,
+        errors: errors.array(),
+      });
+
+      return;
+    } else {
+      Genre.findByIdAndUpdate(req.params.id, genre, {}, function (err, updatedGenre) {
+        if (err) {
+          return next(err);
+        }
+
+        res.redirect(updatedGenre.url);
+      });
+    }
+  },
+];

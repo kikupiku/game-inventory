@@ -156,10 +156,68 @@ exports.platform_delete_post = function (req, res, next) {
   });
 };
 
-exports.platform_update_get = function (req, res) {
-  res.send('NOT IMPLEMENTED: Platform update GET');
+exports.platform_update_get = function (req, res, next) {
+  async.parallel({
+    platform: function (callback) {
+      Platform.findById(req.params.id)
+      .exec(callback);
+    },
+
+    referrer: function (callback) {
+      let referrerURL = req.get('Referrer');
+      let referrer = referrerURL.substring(referrerURL.lastIndexOf('/') + 1);
+      callback(null, referrer);
+    },
+  }, function (err, results) {
+    if (err) {
+      return next(err);
+    }
+
+    if (results.platform === null) {
+      let err = new Error('Platform not found');
+      err.status = 404;
+      return next(err);
+    }
+
+    res.render('platform_form', {
+      title: 'Update platform',
+      platform: results.platform,
+      referrer: results.referrer,
+    });
+  });
 };
 
-exports.platform_update_post = function (req, res) {
-  res.send('NOT IMPLEMENTED: Platform update POST');
-};
+exports.platform_update_post = [
+  validator.body('name', 'Platform type cannot be empty').trim().isLength({ min: 1 }),
+  validator.body('detail', 'Platform detail cannot be empty').trim().isLength({ min: 1 }),
+  validator.sanitizeBody('name').escape(),
+  validator.sanitizeBody('detail').escape(),
+
+  (req, res, next) => {
+    const errors = validator.validationResult(req);
+
+    let platform = new Platform({
+      name: req.body.name,
+      detail: req.body.detail,
+      _id: req.params.id,
+    });
+
+    if (!errors.isEmpty()) {
+      res.render('platform_form', {
+        title: 'Update platform',
+        platform: platform,
+        errors: errors.array(),
+      });
+
+      return;
+    } else {
+      Platform.findByIdAndUpdate(req.params.id, platform, {}, function (err, updatedPlatform) {
+        if (err) {
+          return next(err);
+        }
+
+        res.redirect(updatedPlatform.url);
+      });
+    }
+  },
+];

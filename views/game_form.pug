@@ -6,10 +6,10 @@ block content
   
   div
     form(method='POST' action='')
-      label(for='title') Title:
+      label(for='title') * Title:
       input#title(type='text', placeholder='Need for Speed' name='title' value=(game === undefined ? '' : game.title))
       br
-      label(for='producer') Producer:
+      label(for='producer') * Producer:
       select#producer(type='select', placeholder='Select Producer', name='producer' required='true')
         for producer in producers
           if game
@@ -24,7 +24,7 @@ block content
         else
           |#{game.summary}
       br
-      label Platform (mark at least one):
+      label * Platform (mark at least one):
       for platform in platforms
         div
           input(type='checkbox', name='platform', id=platform._id, value=platform._id, checked=platform.checked)
@@ -37,9 +37,9 @@ block content
       for genre in genres
         div
           input(type='checkbox', name='genre', id=genre._id, value=genre._id, checked=genre.checked)
-          label(for=genre._id) #{genre.label}
+          label.list(for=genre._id) #{genre.label}
       br
-      label(for='isOnWishlist') Game Status:
+      label(for='isOnWishlist') * Game Status:
       - let statusValues = ['Wanted', 'Already played', 'Other']
       for status in statusValues
         if game
@@ -48,6 +48,8 @@ block content
         else
           input(type='radio', name='isOnWishlist', id=status, value=status checked=(status === 'Other' ? true : false))
           label(for=status) #{status}
+      br
+      p.required * - required
       
       
       if game

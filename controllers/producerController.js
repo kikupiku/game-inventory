@@ -156,6 +156,12 @@ exports.producer_delete_post = function (req, res, next) {
   });
 };
 
+//
+//
+// UPDATE GET
+//
+//
+
 exports.producer_update_get = function (req, res, next) {
   async.parallel({
     producer: function (callback) {
@@ -186,6 +192,12 @@ exports.producer_update_get = function (req, res, next) {
     });
   });
 };
+
+//
+//
+// UPDATE POST
+//
+//
 
 exports.producer_update_post = [
   validator.body('company', 'Company name is necessary').trim().isLength({ min: 1 }),

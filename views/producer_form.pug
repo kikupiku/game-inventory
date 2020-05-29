@@ -6,11 +6,13 @@ block content
   
   div
     form(method='POST' action='')
-      label(for='company') Company name:
+      label(for='company') * Company name:
       input#company(type='text', placeholder='CD Projekt Red' name='company' value=(producer === undefined ? '' : producer.company))
       br
       label(for='established') Established in (year):
       input#established(type='number', placeholder='1994' name='established' value=(producer === undefined ? '' : producer.established))
+      br
+      p.required * - required
         
       if producer
         button.btn.btn-create(type='submit')

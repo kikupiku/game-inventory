@@ -6,10 +6,17 @@ block content
   
   div
     form(method='POST' action='')
-      label(for='label') Genre:
+      label(for='label') * Genre:
       input#label(type='text', placeholder='First-person Shooter (FPS)' name='label' value=(genre === undefined ? '' : genre.label))
-      button.btn.btn-create(type='submit')
-        span CREATE
+      br
+      p.required * - required
+      
+      if genre
+        button.btn.btn-create(type='submit')
+          span UPDATE
+      else
+        button.btn.btn-create(type='submit')
+          span CREATE
   
   if errors
     br
