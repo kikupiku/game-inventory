@@ -107,7 +107,7 @@ exports.review_create_post = [
 
         let unescapedLink = (req.body.link).replace(/&#x2F;/g, '/');
         let unescapedRating = (req.body.rating).replace(/&#x2F;/g, '/');
-        let unescapedSnippet = (results.review.content).replace(/&#x27;/g, '\'');
+        let unescapedSnippet = (review.content).replace(/&#x27;/g, '\'');
 
         res.render('review_form', {
           title: 'Add new Review',
