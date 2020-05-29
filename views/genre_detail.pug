@@ -7,9 +7,10 @@ block content
       a(href='../genres') &#8636; Back to List of Genres
   else if (referrer === 'update')
   else if (referrer === 'delete')
+  else if (referrer === 'create')
   else
     h3
-      a(href='../game/' + referrer) &#8636; Back to Game Page
+      a(href='../game/') &#8636; Back to Game Page
   
   h1 #{title} #{genre.label}
   
