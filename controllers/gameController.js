@@ -83,7 +83,16 @@ exports.game_detail = function (req, res, next) {
         return next(err);
       }
 
-      res.render('game_detail', { title: results.game.title, game: results.game, reviews: results.reviews, referrer: results.referrer, higherReferrer: results.higherReferrer });
+      let unescapedSummary = (results.game.summary).replace(/&#x27;/g, '\'');
+
+      res.render('game_detail', {
+        title: results.game.title,
+        game: results.game,
+        reviews: results.reviews,
+        unescapedSummary: unescapedSummary,
+        referrer: results.referrer,
+        higherReferrer: results.higherReferrer,
+       });
     });
 };
 
