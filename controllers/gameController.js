@@ -180,6 +180,8 @@ exports.game_create_get = function (req, res, next) {
 
 exports.game_create_post = [
   (req, res, next) => {
+
+    console.log('ddddddddddddddddddd: ', req.file);
     if (!(req.body.genre instanceof Array)) {
       if (typeof req.body.genre === 'undefined') {
         req.body.genre = [];
@@ -220,6 +222,7 @@ exports.game_create_post = [
       platform: req.body.platform,
       premiere: req.body.premiere,
       genre: req.body.genre,
+      picture: req.file.path,    //GOTTA FIGURE OUT
       isOnWishlist: req.body.isOnWishlist,
     });
 
@@ -469,7 +472,7 @@ exports.game_update_post = [
   validator.body('title', 'There has to be a title').trim().isLength({ min: 1 }),
   validator.body('producer', 'There has to be a producer').trim().isLength({ min: 1 }),
   validator.body('summary').optional({ checkFalsy: true }).trim(),
-  validator.body('platform', 'There has to be at least one platform where you can play this game').trim().isLength({ min: 1 }),
+  validator.body('platform', 'There has to be at least one platform where you can play this game').isLength({ min: 1 }),
   validator.body('premiere').trim().optional({ checkFalsy: true }),
 
   validator.sanitizeBody('title').escape(),
@@ -486,10 +489,13 @@ exports.game_update_post = [
       summary: req.body.summary,
       platform: req.body.platform,
       premiere: req.body.premiere,
+      picture: (req.file == null ? req.body.previousImage : req.file.path),
       genre: (typeof req.body.genre === 'undefined') ? [] : req.body.genre,
       isOnWishlist: req.body.isOnWishlist,
       _id: req.params.id,
     });
+
+    console.log('platformssssssssssssssss: ', req.body.platform);
 
     if (!errors.isEmpty()) {
       async.parallel({

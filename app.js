@@ -2,6 +2,10 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
+// let bodyParser = require('body-parser');
+const dotenv = require('dotenv');
+dotenv.config();
+let multer = require('multer');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
@@ -10,13 +14,12 @@ var usersRouter = require('./routes/users');
 let compression = require('compression');
 let helmet = require('helmet');
 
-const dotenv = require('dotenv');
-dotenv.config();
 const MONGODB_URI = process.env.MONGODB_SECRET; //var for heroku: MONGODB_SECRET
 
 var app = express();
 
 app.use(helmet());
+// app.use(bodyParser.json());
 
 let mongoose = require('mongoose');
 let mongoDB = MONGODB_URI;

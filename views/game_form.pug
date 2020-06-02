@@ -5,7 +5,7 @@ block content
   h1 #{title}
   
   div
-    form(method='POST' action='')
+    form(method='POST' action='' enctype='multipart/form-data')
       label(for='title') * Title:
       input#title(type='text', placeholder='Need for Speed' name='title' value=(game === undefined ? '' : game.title))
       br
@@ -38,6 +38,10 @@ block content
         div
           input(type='checkbox', name='genre', id=genre._id, value=genre._id, checked=genre.checked)
           label.list(for=genre._id) #{genre.label}
+      br
+      label(htmlFor='pictureInput') Image:
+      input(type='file' id='pictureInput' class='pictureInput' name='image')
+      input(type='hidden' name='previousImage' value=game.picture)
       br
       label(for='isOnWishlist') * Game Status:
       - let statusValues = ['Wanted', 'Already played', 'Other']

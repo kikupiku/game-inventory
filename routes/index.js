@@ -7,6 +7,8 @@ let platformController = require('../controllers/platformController');
 let producerController = require('../controllers/producerController');
 let reviewController = require('../controllers/reviewController');
 
+const parser = require('../cloudinary-config');
+
 /* GET home page. */
 router.get('/', gameController.index);
 
@@ -15,11 +17,11 @@ router.get('/', gameController.index);
 router.get('/games', gameController.game_list);
 router.get('/wishlist', gameController.game_wishlist);
 router.get('/game/create', gameController.game_create_get);
-router.post('/game/create', gameController.game_create_post);
+router.post('/game/create', parser.single('image'), gameController.game_create_post);
 router.get('/game/:id/delete', gameController.game_delete_get);
 router.post('/game/:id/delete', gameController.game_delete_post);
 router.get('/game/:id/update', gameController.game_update_get);
-router.post('/game/:id/update', gameController.game_update_post);
+router.post('/game/:id/update', parser.single('image'), gameController.game_update_post);
 router.get('/game/:id', gameController.game_detail);
 
 /// GENRE ROUTES ///
@@ -65,5 +67,13 @@ router.post('/review/:id/delete', reviewController.review_delete_post);
 router.get('/review/:id/update', reviewController.review_update_get);
 router.post('/review/:id/update', reviewController.review_update_post);
 router.get('/review/:id', reviewController.review_detail);
+
+router.use(function (err, req, res, next) {
+  if (err) {
+    console.log('Error', err);
+  } else {
+    console.log('404');
+  }
+});
 
 module.exports = router;

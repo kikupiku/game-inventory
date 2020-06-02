@@ -23,6 +23,8 @@ block content
   
   p released in #{game.premiere} by #{game.producer.company}
   
+  img(src=game.picture)
+  
   if (game.isOnWishlist === 'Wanted')
     br
     div.wishlisted
