@@ -55,7 +55,7 @@ block content
     h2 Reviews by:
     for review in reviews
       - let gameRating = (review.rating).replace(/&#x2F;/g, '/')
-      a.review(href=review.url) #{review.sourcePage}, rating: #{gameRating}
+      a.review(href=review.url) &nbsp;&nbsp;&#8226;&nbsp;#{review.sourcePage}, rating: #{gameRating}
    
   div.btn-wrapper
     div(class="btn btn-update")
