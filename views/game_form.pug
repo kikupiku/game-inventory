@@ -41,7 +41,7 @@ block content
       br
       label(htmlFor='pictureInput') Image:
       input(type='file' id='pictureInput' class='pictureInput' name='image')
-      input(type='hidden' name='previousImage' value=game.picture)
+      input(type='hidden' name='previousImage' value=(game ? game.picture : ''))
       br
       label(for='isOnWishlist') * Game Status:
       - let statusValues = ['Wanted', 'Already played', 'Other']
