@@ -351,12 +351,12 @@ exports.game_delete_get = function (req, res, next) {
 exports.game_delete_post = function (req, res, next) {
   async.parallel({
     game: function (callback) {
-      Game.findById(req.params.idToDelete)
+      Game.findById(req.body.idToDelete)
       .exec(callback);
     },
 
     reviewsOfGame: function (callback) {
-      Review.find({ 'game': req.params.idToDelete })
+      Review.find({ 'game': req.body.idToDelete })
       .exec(callback);
     },
   }, function (err, results) {
@@ -370,6 +370,15 @@ exports.game_delete_post = function (req, res, next) {
         game: results.game,
         reviewsOfGame: results.reviewsOfGame,
         referrer: results.referrer,
+      });
+      return;
+    } else if (results.reviewsOfGame.length == 0 && req.body.auth !== process.env.AUTH_PASSWORD) {
+      res.render('game_delete', {
+        title: 'Delete Game',
+        game: results.game,
+        authError: true,
+        referrer: results.referrer,
+        reviewsOfGame: results.reviewsOfGame,
       });
       return;
     } else {
