@@ -30,6 +30,9 @@ block content
       label(for='link') * Link:
       input#link( type='text' placeholder='https://time.com/4683122/zelda-breath-of-the-wild-review/' name='link' value=(review === undefined ? '' : unescapedLink))
       br
+      label(for='auth') * Are you authorized? Prove it with the password:
+      input(type='text' name='auth' id='auth')
+      br
       p.required * - required
         
       if review

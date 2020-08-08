@@ -12,6 +12,9 @@ block content
       label(for='detail') * Name of platform:
       input#detail(type='text', placeholder='Xbox 360' name='detail' value=(platform === undefined ? '' : platform.detail))
       br
+      label(for='auth') * Are you authorized? Prove it with the password:
+      input(type='password' name='auth' id='auth')
+      br
       p.required * - required
         
       if platform

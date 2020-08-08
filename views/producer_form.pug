@@ -12,6 +12,9 @@ block content
       label(for='established') Established in (year):
       input#established(type='number', placeholder='1994' name='established' value=(producer === undefined ? '' : producer.established))
       br
+      label(for='auth') * Are you authorized? Prove it with the password:
+      input(type='password' name='auth' id='auth')
+      br
       p.required * - required
         
       if producer

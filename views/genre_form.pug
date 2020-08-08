@@ -9,6 +9,9 @@ block content
       label(for='label') * Genre:
       input#label(type='text', placeholder='First-person Shooter (FPS)' name='label' value=(genre === undefined ? '' : genre.label))
       br
+      label(for='auth') * Are you authorized? Prove it with the password:
+      input(type='password' name='auth' id='auth')
+      br
       p.required * - required
       
       if genre

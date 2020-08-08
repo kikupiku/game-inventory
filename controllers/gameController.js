@@ -92,7 +92,7 @@ exports.game_detail = function (req, res, next) {
         unescapedSummary: unescapedSummary,
         referrer: results.referrer,
         higherReferrer: results.higherReferrer,
-       });
+        });
     });
 };
 
@@ -181,7 +181,6 @@ exports.game_create_get = function (req, res, next) {
 exports.game_create_post = [
   (req, res, next) => {
 
-    console.log('ddddddddddddddddddd: ', req.file);
     if (!(req.body.genre instanceof Array)) {
       if (typeof req.body.genre === 'undefined') {
         req.body.genre = [];
@@ -215,6 +214,8 @@ exports.game_create_post = [
   (req, res, next) => {
     const errors = validator.validationResult(req);
 
+    let path = req.file ? req.file.path : '';
+
     let game = new Game({
       title: req.body.title,
       producer: req.body.producer,
@@ -222,11 +223,11 @@ exports.game_create_post = [
       platform: req.body.platform,
       premiere: req.body.premiere,
       genre: req.body.genre,
-      picture: req.file.path,    //GOTTA FIGURE OUT
+      picture: path,
       isOnWishlist: req.body.isOnWishlist,
     });
 
-    if (!errors.isEmpty()) {
+    if (!errors.isEmpty() || req.body.auth !== process.env.AUTH_PASSWORD) {
       async.parallel({
         producers: function (callback) {
           Producer.find(callback);
@@ -259,6 +260,21 @@ exports.game_create_post = [
           }
         }
 
+        
+        let errorsList = errors.array();
+        console.log('errorsssssssssssssss: ', errorsList);
+
+        if (req.body.auth !== process.env.AUTH_PASSWORD) {
+          errorsList.push({
+            value: '',
+            msg: 'You have to enter the correct authorization password',
+            param: 'auth',
+            location: 'body'
+          });
+        } 
+
+        console.log('errors AFTER', errorsList);
+
         let selectedProducerId = req.body.producer.toString();
         res.render('game_form', {
           title: 'Create new Game',
@@ -268,7 +284,7 @@ exports.game_create_post = [
           checkedStatus: req.body.isOnWishlist,
           selectedProducerId: selectedProducerId,
           game: game,
-          errors: errors.array(),
+          errors: errorsList,
         });
       });
 
@@ -494,8 +510,6 @@ exports.game_update_post = [
       isOnWishlist: req.body.isOnWishlist,
       _id: req.params.id,
     });
-
-    console.log('platformssssssssssssssss: ', req.body.platform);
 
     if (!errors.isEmpty()) {
       async.parallel({

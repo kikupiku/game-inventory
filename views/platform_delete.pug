@@ -21,6 +21,9 @@ block content
     p Do you really want to delete this Platform?
     
     form(method='POST' action='')
+      label(for='auth') * Are you authorized? Prove it with the password:
+      input(type='password' name='auth' id='auth')
+      br
       input#idToDelete(type='hidden' name='idToDelete' required='true' value=platform._id)
       button.btn.btn-delete(type='submit') 
         span Yes, DELETE

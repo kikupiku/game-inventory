@@ -53,6 +53,9 @@ block content
           input(type='radio', name='isOnWishlist', id=status, value=status checked=(status === 'Other' ? true : false))
           label(for=status) #{status}
       br
+      label(for='auth') * Are you authorized? Prove it with the password:
+      input(type='password' name='auth' id='auth')
+      br
       p.required * - required
       
       
