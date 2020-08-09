@@ -96,16 +96,26 @@ exports.review_create_post = [
       link: req.body.link,
     });
 
-    if (!errors.isEmpty()) {
-      Game.find({}, 'title')
-      .exec(function (err, games) {
+    if (!errors.isEmpty() || req.body.auth !== process.env.AUTH_PASSWORD) {
+      Game.find({}, 'title').exec(function (err, games) {
         if (err) {
           return next(err);
         }
 
-        let unescapedLink = (req.body.link).replace(/&#x2F;/g, '/');
-        let unescapedRating = (req.body.rating).replace(/&#x2F;/g, '/');
-        let unescapedSnippet = (review.content).replace(/&#x27;/g, '\'');
+        let unescapedLink = req.body.link.replace(/&#x2F;/g, '/');
+        let unescapedRating = req.body.rating.replace(/&#x2F;/g, '/');
+        let unescapedSnippet = review.content.replace(/&#x27;/g, "'");
+
+        let errorsList = errors.array();
+
+        if (req.body.auth !== process.env.AUTH_PASSWORD) {
+          errorsList.push({
+            value: '',
+            msg: 'You have to enter the correct authorization password',
+            param: 'auth',
+            location: 'body',
+          });
+        } 
 
         res.render('review_form', {
           title: 'Add new Review',
@@ -115,7 +125,7 @@ exports.review_create_post = [
           unescapedRating: unescapedRating,
           unescapedSnippet: unescapedSnippet,
           selectedGame: review.game._id,
-          errors: errors.array()
+          errors: errorsList,
         });
       });
 

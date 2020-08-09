@@ -71,12 +71,27 @@ exports.genre_create_post = [
       label: req.body.label,
     });
 
-    if (!errors.isEmpty()) {
-      res.render('genre_form', { title: 'Create new Genre', genre: genre, errors: errors.array() });
+    if (!errors.isEmpty() || req.body.auth !== process.env.AUTH_PASSWORD) {
+
+      let errorsList = errors.array();
+
+      if (req.body.auth !== process.env.AUTH_PASSWORD) {
+        errorsList.push({
+          value: '',
+          msg: 'You have to enter the correct authorization password',
+          param: 'auth',
+          location: 'body',
+        });
+      } 
+
+      res.render('genre_form', {
+        title: 'Create new Genre',
+        genre: genre,
+        errors: errorsList,
+      });
       return;
     } else {
-      Genre.findOne({ 'label': req.body.label })
-      .exec(function (err, foundGenre) {
+      Genre.findOne({ label: req.body.label }).exec(function (err, foundGenre) {
         if (err) {
           return next(err);
         }

@@ -262,7 +262,6 @@ exports.game_create_post = [
 
         
         let errorsList = errors.array();
-        console.log('errorsssssssssssssss: ', errorsList);
 
         if (req.body.auth !== process.env.AUTH_PASSWORD) {
           errorsList.push({
@@ -272,8 +271,6 @@ exports.game_create_post = [
             location: 'body'
           });
         } 
-
-        console.log('errors AFTER', errorsList);
 
         let selectedProducerId = req.body.producer.toString();
         res.render('game_form', {

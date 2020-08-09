@@ -69,12 +69,30 @@ exports.platform_create_post = [
       detail: req.body.detail,
     });
 
-    if (!errors.isEmpty()) {
-      res.render('platform_form', { title: 'Create new Platform', platform: req.body, errors: errors.array() });
+    if (!errors.isEmpty() || req.body.auth !== process.env.AUTH_PASSWORD) {
+
+      let errorsList = errors.array();
+
+      if (req.body.auth !== process.env.AUTH_PASSWORD) {
+        errorsList.push({
+          value: '',
+          msg: 'You have to enter the correct authorization password',
+          param: 'auth',
+          location: 'body',
+        });
+      } 
+
+      res.render('platform_form', {
+        title: 'Create new Platform',
+        platform: req.body,
+        errors: errorsList,
+      });
       return;
     } else {
-      Platform.findOne({ 'detail': req.body.detail })
-      .exec(function (err, foundPlatform) {
+      Platform.findOne({ detail: req.body.detail }).exec(function (
+        err,
+        foundPlatform
+      ) {
         if (err) {
           return next(err);
         }
@@ -90,7 +108,6 @@ exports.platform_create_post = [
             res.redirect(platform.url);
           });
         }
-
       });
     }
   },

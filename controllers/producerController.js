@@ -54,6 +54,8 @@ exports.producer_create_get = function (req, res) {
   res.render('producer_form', { title: 'Create new Producer' });
 };
 
+// CREATE POST
+
 exports.producer_create_post = [
   validator.body('company', 'Company name is necessary').trim().isLength({ min: 1 }),
   validator.body('established', 'I assume no game developer company was established before 1850. I know, wild, but enter a year between 1850 and 2099').optional({ checkFalsy: true }).isInt({ min: 1850, max: 2099 }),
@@ -69,12 +71,30 @@ exports.producer_create_post = [
       established: req.body.established,
     });
 
-    if (!errors.isEmpty()) {
-      res.render('producer_form', { title: 'Create new Producer', producer: req.body, errors: errors.array() });
+    if (!errors.isEmpty() || req.body.auth !== process.env.AUTH_PASSWORD) {
+
+      let errorsList = errors.array();
+
+      if (req.body.auth !== process.env.AUTH_PASSWORD) {
+        errorsList.push({
+          value: '',
+          msg: 'You have to enter the correct authorization password',
+          param: 'auth',
+          location: 'body',
+        });
+      } 
+
+      res.render('producer_form', {
+        title: 'Create new Producer',
+        producer: req.body,
+        errors: errorsList,
+      });
       return;
     } else {
-      Producer.findOne({ 'company': req.body.company })
-      .exec(function (err, foundProducer) {
+      Producer.findOne({ company: req.body.company }).exec(function (
+        err,
+        foundProducer
+      ) {
         if (err) {
           return next(err);
         }
