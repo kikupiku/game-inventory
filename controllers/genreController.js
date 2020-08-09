@@ -228,16 +228,30 @@ exports.genre_update_post = [
       _id: req.params.id,
     });
 
-    if (!errors.isEmpty()) {
+    if (!errors.isEmpty() || req.body.auth !== process.env.AUTH_PASSWORD) {
+      let errorsList = errors.array();
+
+      if (req.body.auth !== process.env.AUTH_PASSWORD) {
+        errorsList.push({
+          value: '',
+          msg: 'You have to enter the correct authorization password',
+          param: 'auth',
+          location: 'body',
+        });
+      }
+
       res.render('genre_form', {
         title: 'Update genre',
         genre: genre,
-        errors: errors.array(),
+        errors: errorsList,
       });
 
       return;
     } else {
-      Genre.findByIdAndUpdate(req.params.id, genre, {}, function (err, updatedGenre) {
+      Genre.findByIdAndUpdate(req.params.id, genre, {}, function (
+        err,
+        updatedGenre
+      ) {
         if (err) {
           return next(err);
         }

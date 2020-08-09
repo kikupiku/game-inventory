@@ -250,16 +250,30 @@ exports.producer_update_post = [
       _id: req.params.id,
     });
 
-    if (!errors.isEmpty()) {
+    if (!errors.isEmpty() || req.body.auth !== process.env.AUTH_PASSWORD) {
+      let errorsList = errors.array();
+
+      if (req.body.auth !== process.env.AUTH_PASSWORD) {
+        errorsList.push({
+          value: '',
+          msg: 'You have to enter the correct authorization password',
+          param: 'auth',
+          location: 'body',
+        });
+      }
+
       res.render('producer_form', {
         title: 'Update producer',
         producer: producer,
-        errors: errors.array(),
+        errors: errorsList,
       });
 
       return;
     } else {
-      Producer.findByIdAndUpdate(req.params.id, producer, {}, function (err, updatedProducer) {
+      Producer.findByIdAndUpdate(req.params.id, producer, {}, function (
+        err,
+        updatedProducer
+      ) {
         if (err) {
           return next(err);
         }

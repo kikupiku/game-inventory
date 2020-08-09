@@ -208,7 +208,8 @@ exports.review_update_get = function (req, res, next) {
     },
 
     games: function (callback) {
-      Game.find(callback);
+      Game.find()
+      .exec(callback);
     },
 
     referrer: function (callback) {
@@ -243,6 +244,8 @@ exports.review_update_get = function (req, res, next) {
   });
 };
 
+// UPDATE_POST
+
 exports.review_update_post = [
   validator.body('game', 'Game must be specified').trim().isLength({ min: 1 }),
   validator.body('sourcePage', 'Review cannot be anonymous').trim().isLength({ min: 1 }),
@@ -250,7 +253,7 @@ exports.review_update_post = [
   validator.body('rating', 'Please fill in the rating. If you cannot find it, write \'-\'').trim().isLength({ min: 1 }),
   validator.body('link', 'Invalid website url').trim().isURL().optional({ checkFalsy: true }),
 
-  validator.sanitizeBody('*').escape(),
+  validator.sanitizeBody('game, sourcePage, content, rating, link').escape(),
 
   (req, res, next) => {
     const errors = validator.validationResult(req);
@@ -264,28 +267,57 @@ exports.review_update_post = [
       _id: req.params.id,
     });
 
-    if (!errors.isEmpty()) {
-      let unescapedLink = (results.review.link).replace(/&#x2F;/g, '/');
-      let unescapedRating = (results.review.rating).replace(/&#x2F;/g, '/');
-      let unescapedSnippet = (results.review.content).replace(/&#x27;/g, '\'');
+    Game.find({})
+    .exec(function (err, games) {
+      if (err) {
+        return next(err);
+      }
 
-      res.render('review_form', {
-        title: 'Update review',
-        review: review,
-        unescapedLink: unescapedLink,
-        unescapedRating: unescapedRating,
-        unescapedSnippet: unescapedSnippet,
-      });
+      if (!errors.isEmpty() || req.body.auth !== process.env.AUTH_PASSWORD) {
 
-      return;
-    } else {
-      Review.findByIdAndUpdate(req.params.id, review, {}, function (err, updatedReview) {
-        if (err) {
-          return next(err);
+        console.log('eeeeeeeeeeerrrrr: ', req.body.auth);
+
+        let unescapedLink = review.link.replace(/&#x2F;/g, '/');
+        let unescapedRating = review.rating.replace(/&#x2F;/g, '/');
+        let unescapedSnippet = review.content.replace(/&#x27;/g, "'");
+
+        let errorsList = errors.array();
+
+        
+        if (req.body.auth !== process.env.AUTH_PASSWORD) {
+          errorsList.push({
+            value: '',
+            msg: 'You have to enter the correct authorization password',
+            param: 'auth',
+            location: 'body',
+          });
         }
 
-        res.redirect(updatedReview.url);
-      });
-    }
+        console.log('gamesssssssssssssssss: ', games);
+        
+        res.render('review_form', {
+          title: 'Update review',
+          review: review,
+          games: games,
+          unescapedLink: unescapedLink,
+          unescapedRating: unescapedRating,
+          unescapedSnippet: unescapedSnippet,
+          errors: errorsList,
+        });
+
+        return;
+      } else {
+        Review.findByIdAndUpdate(req.params.id, review, {}, function (
+          err,
+          updatedReview
+        ) {
+          if (err) {
+            return next(err);
+          }
+
+          res.redirect(updatedReview.url);
+        });
+      }
+    });
   },
 ];

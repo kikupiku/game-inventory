@@ -517,53 +517,70 @@ exports.game_update_post = [
       _id: req.params.id,
     });
 
-    if (!errors.isEmpty()) {
-      async.parallel({
-        producers: function (callback) {
-          Producer.find(callback);
-        },
+    if (!errors.isEmpty() || req.body.auth !== process.env.AUTH_PASSWORD) {
+      async.parallel(
+        {
+          producers: function (callback) {
+            Producer.find(callback);
+          },
 
-        platforms: function (callback) {
-          Platform.find(callback);
-        },
+          platforms: function (callback) {
+            Platform.find(callback);
+          },
 
-        genres: function (callback) {
-          Genre.find(callback);
+          genres: function (callback) {
+            Genre.find(callback);
+          },
         },
-      }, function (err, results) {
-        if (err) {
-          return next(err);
-        }
-
-        for (let i = 0; i < results.platforms.length; i++) {
-          if (game.platform.indexOf(results.platforms[i]._id) >= 0) {
-            results.platforms[i].checked = 'true';
+        function (err, results) {
+          if (err) {
+            return next(err);
           }
-        }
 
-        for (let i = 0; i < results.genres.length; i++) {
-          if (game.genre.indexOf(results.genres[i]._id) > -1) {
-            results.genres[i].checked = 'true';
+          for (let i = 0; i < results.platforms.length; i++) {
+            if (game.platform.indexOf(results.platforms[i]._id) >= 0) {
+              results.platforms[i].checked = 'true';
+            }
           }
-        }
 
-        let selectedProducerId = game.producer._id;
-        let checkedStatus = game.isOnWishlist;
-        res.render('game_form', {
-          title: 'Update Book',
-          producers: results.producers,
-          platforms: results.platforms,
-          genres: results.genres,
-          game: game,
-          checkedStatus: checkedStatus,
-          selectedProducerId: selectedProducerId,
-          errors: errors.array(),
-        });
-      });
+          for (let i = 0; i < results.genres.length; i++) {
+            if (game.genre.indexOf(results.genres[i]._id) > -1) {
+              results.genres[i].checked = 'true';
+            }
+          }
+
+          let errorsList = errors.array();
+
+          if (req.body.auth !== process.env.AUTH_PASSWORD) {
+            errorsList.push({
+              value: '',
+              msg: 'You have to enter the correct authorization password',
+              param: 'auth',
+              location: 'body',
+            });
+          } 
+
+          let selectedProducerId = game.producer._id;
+          let checkedStatus = game.isOnWishlist;
+          res.render('game_form', {
+            title: 'Update Book',
+            producers: results.producers,
+            platforms: results.platforms,
+            genres: results.genres,
+            game: game,
+            checkedStatus: checkedStatus,
+            selectedProducerId: selectedProducerId,
+            errors: errorsList,
+          });
+        }
+      );
 
       return;
     } else {
-      Game.findByIdAndUpdate(req.params.id, game, {}, function (err, updatedBook) {
+      Game.findByIdAndUpdate(req.params.id, game, {}, function (
+        err,
+        updatedBook
+      ) {
         if (err) {
           return next(err);
         }

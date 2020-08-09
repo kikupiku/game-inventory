@@ -218,6 +218,8 @@ exports.platform_update_get = function (req, res, next) {
   });
 };
 
+// UPDATE_POST
+
 exports.platform_update_post = [
   validator.body('name', 'Platform type cannot be empty').trim().isLength({ min: 1 }),
   validator.body('detail', 'Platform detail cannot be empty').trim().isLength({ min: 1 }),
@@ -233,16 +235,30 @@ exports.platform_update_post = [
       _id: req.params.id,
     });
 
-    if (!errors.isEmpty()) {
+    if (!errors.isEmpty() || req.body.auth !== process.env.AUTH_PASSWORD) {
+      let errorsList = errors.array();
+
+      if (req.body.auth !== process.env.AUTH_PASSWORD) {
+        errorsList.push({
+          value: '',
+          msg: 'You have to enter the correct authorization password',
+          param: 'auth',
+          location: 'body',
+        });
+      }
+
       res.render('platform_form', {
         title: 'Update platform',
         platform: platform,
-        errors: errors.array(),
+        errors: errorsList,
       });
 
       return;
     } else {
-      Platform.findByIdAndUpdate(req.params.id, platform, {}, function (err, updatedPlatform) {
+      Platform.findByIdAndUpdate(req.params.id, platform, {}, function (
+        err,
+        updatedPlatform
+      ) {
         if (err) {
           return next(err);
         }
