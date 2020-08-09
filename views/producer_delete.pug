@@ -26,3 +26,9 @@ block content
       input#idToDelete(type='hidden' name='idToDelete' required='true' value=producer._id)
       button.btn.btn-delete(type='submit') 
         span Yes, DELETE
+
+  if authError
+    br
+    ul
+      div.errors
+        li.error-msg 	&#10060; You have to put in the correct authorization password

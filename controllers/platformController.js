@@ -160,15 +160,29 @@ exports.platform_delete_post = function (req, res, next) {
     }
 
     if (results.gamesOnPlatform > 0) {
-      res.render('platform_delete', { title: 'Delete Platform', platform: results.platform, gamesOnPlatform: results.gamesOnPlatform });
-    } else {
-      Platform.findByIdAndRemove(req.body.idToDelete, function deletePlatform(err) {
-        if (err) {
-          return next(err);
-        }
-
-        res.redirect('/platforms');
+      res.render('platform_delete', { 
+        title: 'Delete Platform', 
+        platform: results.platform, 
+        gamesOnPlatform: results.gamesOnPlatform
       });
+    } else if (results.gamesOnPlatform == 0  && req.body.auth !== process.env.AUTH_PASSWORD) {
+      res.render('platform_delete', {
+        title: 'Delete Platform',
+        platform: results.platform,
+        gamesOnPlatform: results.gamesOnPlatform,
+        authError: true
+      });
+    } else {
+      Platform.findByIdAndRemove(
+        req.body.idToDelete,
+        function deletePlatform(err) {
+          if (err) {
+            return next(err);
+          }
+
+          res.redirect('/platforms');
+        }
+      );
     }
   });
 };

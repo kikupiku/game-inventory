@@ -11,8 +11,14 @@ block content
   
   form(method='POST' action='')
     label(for='auth') * Are you authorized? Prove it with the password:
-      input(type='text' name='auth' id='auth')
-      br
+    input(type='password' name='auth' id='auth')
+    br
     input#idToDelete(type='hidden' name='idToDelete' required='true' value=review._id)
     button.btn.btn-delete(type='submit') 
       span Yes, DELETE
+
+  if authError
+    br
+    ul
+      div.errors
+        li.error-msg 	&#10060; You have to put in the correct authorization password

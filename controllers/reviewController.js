@@ -83,7 +83,7 @@ exports.review_create_post = [
   validator.body('rating', 'Please fill in the rating. If you cannot find it, write \'-\'').trim().isLength({ min: 1 }),
   validator.body('link', 'Invalid website url').trim().isURL().optional({ checkFalsy: true }),
 
-  validator.sanitizeBody('*').escape(),
+  validator.sanitizeBody('game, sourcePage, content, rating, link').escape(),
 
   (req, res, next) => {
     const errors = validator.validationResult(req);
@@ -164,7 +164,11 @@ exports.review_delete_get = function (req, res, next) {
       res.redirect('/reviews');
     }
 
-    res.render('review_delete', { title: 'Delete review', review: results.review, referrer: results.referrer });
+    res.render('review_delete', { 
+      title: 'Delete review', 
+      review: results.review, 
+      referrer: results.referrer 
+    });
   });
 };
 
@@ -176,13 +180,22 @@ exports.review_delete_post = function (req, res, next) {
       return next(err);
     }
 
-    Review.findByIdAndRemove(req.body.idToDelete, function deleteReview(err) {
-      if (err) {
-        return next(err);
-      }
+    if (req.body.auth !== process.env.AUTH_PASSWORD) {
+      res.render('review_delete', {
+        title: 'Delete review',
+        review: review,
+        authError: true
+      });
+      return;
+    } else {
+      Review.findByIdAndRemove(req.body.idToDelete, function deleteReview(err) {
+        if (err) {
+          return next(err);
+        }
 
-      res.redirect('/reviews');
-    });
+        res.redirect('/reviews');
+      });
+    }
   });
 };
 

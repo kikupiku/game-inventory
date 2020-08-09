@@ -138,7 +138,12 @@ exports.genre_delete_get = function (req, res, next) {
       res.redirect('/genres');
     }
 
-    res.render('genre_delete', { title: 'Delete genre', genre: results.genre, gamesWithGenre: results.gamesWithGenre, referrer: results.referrer });
+    res.render('genre_delete', { 
+      title: 'Delete genre', 
+      genre: results.genre, 
+      gamesWithGenre: results.gamesWithGenre, 
+      referrer: results.referrer 
+    });
   });
 };
 
@@ -159,7 +164,14 @@ exports.genre_delete_post = function (req, res, next) {
     }
 
     if (results.gamesWithGenre.length > 0) {
-      res.render('genre_delete', { title: 'Delete genre', genre: results.genre, gamesWithGenre: results.gamesWithGenre });
+      res.render('genre_delete', { 
+        title: 'Delete genre', 
+        genre: results.genre, 
+        gamesWithGenre: results.gamesWithGenre 
+      });
+      return;
+    } else if (results.gamesWithGenre.length == 0 && req.body.auth !== process.env.AUTH_PASSWORD) {
+      res.render('genre_delete', { title: 'Delete genre', genre: results.genre, gamesWithGenre: results.gamesWithGenre, authError: true });
       return;
     } else {
       Genre.findByIdAndRemove(req.body.idToDelete, function deleteGenre(err) {

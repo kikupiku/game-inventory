@@ -374,8 +374,8 @@ exports.game_delete_post = function (req, res, next) {
         title: 'Delete Game',
         game: results.game,
         authError: true,
-        referrer: results.referrer,
         reviewsOfGame: results.reviewsOfGame,
+        referrer: results.referrer,
       });
       return;
     } else {

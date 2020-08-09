@@ -162,16 +162,31 @@ exports.producer_delete_post = function (req, res, next) {
     }
 
     if (results.gamesByProducer.length > 0) {
-      res.render('producer_delete', { title: 'Delete Producer', producer: results.producer, gamesByProducer: results.gamesByProducer });
+      res.render('producer_delete', { 
+        title: 'Delete Producer', 
+        producer: results.producer, 
+        gamesByProducer: results.gamesByProducer 
+      });
+      return;
+    } else if (results.gamesByProducer.length == 0 && req.body.auth !== process.env.AUTH_PASSWORD) {
+      res.render('producer_delete', {
+        title: 'Delete Producer',
+        producer: results.producer,
+        gamesByProducer: results.gamesByProducer,
+        authError: true
+      });
       return;
     } else {
-      Producer.findByIdAndRemove(req.body.idToDelete, function deleteProducer(err) {
-        if (err) {
-          return next(err);
-        }
+      Producer.findByIdAndRemove(
+        req.body.idToDelete,
+        function deleteProducer(err) {
+          if (err) {
+            return next(err);
+          }
 
-        res.redirect('/producers');
-      });
+          res.redirect('/producers');
+        }
+      );
     }
   });
 };
