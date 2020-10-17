@@ -8,4 +8,4 @@ Each model action (creating, updating, deleting) is requires a password.
 
 The project has been deployed on Heroku and is available **[HERE](https://game-inventory-kikupiku.herokuapp.com/)**
 
-![gif on the project in action](https://res.cloudinary.com/kikupiku/image/upload/v1597065130/project-gifs/game-inventory_fcitno.gif)
+![gif on the project in action](https://res.cloudinary.com/kikupiku/image/upload/v1602937949/project-gifs/game-inventory_rqvivo.gif)
